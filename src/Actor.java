@@ -5,31 +5,58 @@ import java.util.List;
 public class Actor {
 	private InfoStore store;
 	
-	
 	//Actor functions
+	public boolean isDead(){
+		//TODO: Finish implementation
+		return false;
+	}
+	
+	public void extractCost(int cost) {
+		//TODO: Finish implementation
+	}
+		
 	public void sense(List<Event> events) {
-		List<Info> sensorMatchRules = getSensorMatchRules();
-		List<Info> sensorMatches = new ArrayList<Info>();
+		List<Rule> sensorRules = getSensorRules();
 		for (int i = 0; i < events.size(); i++) {
 			InfoStore eventStore = events.get(i).infoStore();
-			List<Info> eventMatches = eventStore.matchInfo(sensorMatchRules);
-			sensorMatches.addAll(eventMatches);
+			for (int j = 0; j < sensorRules.size(); j++) {
+				List<Info> sensorMatchRule = sensorRules.get(j).matchRule;
+				List<Info> eventMatches = eventStore.matchInfo(sensorMatchRule);
+				addSensorInfo(eventMatches);
+			}
 		}
-		addSensorInfo(sensorMatches);
-		//TODO: Finish implementation
 	}
 	
 	public void induct() {
-		//TODO: Finish implementation
+		List<Rule> inductorRules = getInductorRules();
+		for (int i = 0; i < inductorRules.size(); i++) {
+			List<Info> inductorMatchRule = inductorRules.get(i).matchRule; 
+			List<Info> inductorModRule = inductorRules.get(i).actionRule; 
+			List<Info> inductorMatches = store.matchInfo(inductorMatchRule);
+			modifyInfo(inductorModRule, inductorMatches);
+		}
 	}
-	
+
 	public void deduct() {
-		//TODO: Finish implementation
+		List<Rule> deductorRules = getDeductorRules();
+		for (int i = 0; i < deductorRules.size(); i++) {
+			List<Info> deductorMatchRule = deductorRules.get(i).matchRule; 
+			List<Info> deductorModRule = deductorRules.get(i).actionRule;
+			List<Info> deductorMatches = store.matchInfo(deductorMatchRule);
+			modifyInfo(deductorModRule, deductorMatches);
+		}
 	}
 	
 	public List<Event> actuate() {
 		List<Event> events = new ArrayList<Event>();
-		//TODO: Finish implementation
+		List<Rule> actuatorRules = getActuatorRules();
+		for (int i = 0; i < actuatorRules.size(); i++) {
+			List<Info> actuatorMatchRule = actuatorRules.get(i).matchRule;
+			List<Info> actuatorEventRule = actuatorRules.get(i).actionRule;
+			List<Info> actuatorMatches = store.matchInfo(actuatorMatchRule);
+			List<Event> newEvents = createEvents(actuatorEventRule, actuatorMatches);
+			events.addAll(newEvents);
+		}
 		return events;
 	}
 	
@@ -40,40 +67,33 @@ public class Actor {
 		return child;
 	}
 	
-	public boolean isDead(){
-		//TODO: Finish implementation
-		return false;
-	}
-	
-	public void extractCost(int cost) {
-		//TODO: Finish implementation
-	}
-	
 	//Convenience functions
 	public InfoStore infoStore() {
 		return store;
 	}
 	
-	private List<Info> getSensorMatchRules() {
-		List<Info> rules = new ArrayList<Info>();
+	//Private functions	
+	private List<Rule> getSensorRules() {
+		List<Rule> rules = new ArrayList<Rule>();
 		//TODO: Finish implementation
 		return rules;
 	}
 	
-	private List<Info> getInductorMatchRules() {
-		List<Info> rules = new ArrayList<Info>();
+	private List<Rule> getInductorRules() {
+		List<Rule> rules = new ArrayList<Rule>();
 		//TODO: Finish implementation
 		return rules;
 	}
 	
-	private List<Info> getDeductorMatchRules() {
-		List<Info> rules = new ArrayList<Info>();
+	private List<Rule> getDeductorRules() {
+		List<Rule> rules = new ArrayList<Rule>();
 		//TODO: Finish implementation
 		return rules;
 	}
 	
-	private List<Info> getActuatorMatchRules() {
-		List<Info> rules = new ArrayList<Info>();
+
+	private List<Rule> getActuatorRules() {
+		List<Rule> rules = new ArrayList<Rule>();
 		//TODO: Finish implementation
 		return rules;
 	}
@@ -83,13 +103,15 @@ public class Actor {
 		return true;
 	}
 
-	private boolean addInductorInfo(List<Info> sensorInfo) {
+	private void modifyInfo(List<Info> modRule,
+			List<Info> sourceInfo) {
 		//TODO: Finish implementation
-		return true;
 	}
-
-	private boolean addDeductorInfo(List<Info> sensorInfo) {
+	
+	private List<Event> createEvents(List<Info> eventRule, 
+			List<Info> sourceInfo) {
+		List<Event> events = new ArrayList<Event>();
 		//TODO: Finish implementation
-		return true;
+		return events;
 	}
 }

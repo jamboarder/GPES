@@ -25,7 +25,7 @@ public class Environment {
 		return true;
 	}
 	
-	public void step(int stepCost) {
+	public List<Event> step(int stepCost) {
 		//Extract cost to execute this step
 		for (int i = 0; i < actors.size(); i++) {
 			actors.get(i).extractCost(stepCost);
@@ -64,17 +64,21 @@ public class Environment {
 		List<Event> allCreatedEvents = new ArrayList<Event>();
 		for (int i = 0; i < actors.size(); i++) {
 			List<Event> createdEvents = actors.get(i).actuate();
-			for (int j = 0; j < createdEvents.size(); j++) {
-
-				//Actor reproduction
-				if (createdEvents.get(j).isReproductionEvent()) {
-					actors.get(i).reproduce(createdEvents.get(j));
-				}
-				
-				allCreatedEvents.add(createdEvents.get(j));
-			}
+			allCreatedEvents.addAll(createdEvents);
+			events.addAll(createdEvents);
 		}
 		
+		//Actor reproduction
+		for (int i = 0; i < allCreatedEvents.size(); i++) {
+			Event createdEvent = allCreatedEvents.get(i);
+			if (createdEvent.isReproductionEvent()) {
+				Actor newActor = actors.get(i).reproduce(createdEvent);
+				actors.add(newActor);
+			}
+		}
+
 		stepCount++;
+		
+		return allCreatedEvents;
 	}
 }

@@ -42,7 +42,7 @@ public class InfoStore {
 		}
 	}
 	
-	public List<Info> matchInfo(List<Info> matchRules) {
+	public List<Info> matchInfo(List<Info> matchRule) {
 		List<Info> matches = new ArrayList<Info>();
 		//TODO: Finish implementation
 		return matches;
