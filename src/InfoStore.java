@@ -2,20 +2,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InfoStore {
-	private List<Integer> s = new ArrayList<Integer>();
-	private List<Integer> p = new ArrayList<Integer>();
-	private List<Integer> o = new ArrayList<Integer>();
+	private List<Info> infoCollection = new ArrayList<Info>();
+	private List<Integer> subjectCache;
+	private List<Integer> predicateCache;
+	private List<Integer> objectCache;
+	
 	public int maxSize = 100;
 	
 	public int size() {
-		return s.size();
+		return infoCollection.size();
 	}
 	
-	public boolean add(List<Integer> triple) {
-		if (triple.size() == 3 && s.size() < maxSize) {
-			s.add(triple.get(0));
-			p.add(triple.get(1));
-			o.add(triple.get(2));
+	public boolean add(Info info) {
+		if (infoCollection.size() < maxSize) {
+			infoCollection.add(info);
+			subjectCache.add(info.s);
+			predicateCache.add(info.p);
+			objectCache.add(info.o);
 			return true;
 		} else {
 			return false;
@@ -23,62 +26,61 @@ public class InfoStore {
 	}
 	
 	public void clear() {
-		s.clear();
-		p.clear();
-		o.clear();
+		infoCollection.clear();
 	}
 
-	public boolean remove(List<Integer> triple) {
-		if (triple.size() != 3) {
+	public boolean remove(Info info) {
+		int foundIndex = infoCollection.indexOf(info);
+		if (foundIndex == -1) {
 			return false;
+		} else {
+			infoCollection.remove(foundIndex);
+			subjectCache.remove(foundIndex);
+			predicateCache.remove(foundIndex);
+			objectCache.remove(foundIndex);
+			return true;
 		}
-		int sFoundIndex = s.indexOf(triple.get(0));
-		if (sFoundIndex == -1) {
-			return false;
-		}
-		int pFoundIndex = p.indexOf(triple.get(1));
-		if (pFoundIndex == -1) {
-			return false;
-		}
-		int oFoundIndex = o.indexOf(triple.get(2));
-		if (oFoundIndex == -1) {
-			return false;
-		}
-		//TODO Finish impementation
-		return true;
 	}
 	
-	public List<Integer> indexesForSubject(int subject) {
-		return indexesForElement(subject, s);
+	public List<Info> matchInfo(List<Info> matchRules) {
+		List<Info> matches = new ArrayList<Info>();
+		//TODO: Finish implementation
+		return matches;
 	}
 	
-	public List<Integer> indexesForPredicate(int predicate) {
-		return indexesForElement(predicate, p);
+	
+	public List<Integer> indexesForSubject(Info info) {
+		
+		return indexesForElement(info.s, subjectCache);
+	}
+	
+	public List<Integer> indexesForPredicate(Info info) {
+		return indexesForElement(info.p, predicateCache);
 	}
 
-	public List<Integer> indexesForObject(int object) {
-		return indexesForElement(object, o);
+	public List<Integer> indexesForObject(Info info) {
+		return indexesForElement(info.o, objectCache);
 	}
 	
 	public List<Integer> subjectsForIndexes(List<Integer> indexes) {
-		return subListForIndexes(indexes, s);
+		return elementsForIndexes(indexes, subjectCache);
 	}
 
 	public List<Integer> predicatesForIndexes(List<Integer> indexes) {
-		return subListForIndexes(indexes, p);
+		return elementsForIndexes(indexes, predicateCache);
 	}
 
 	public List<Integer> objectsForIndexes(List<Integer> indexes) {
-		return subListForIndexes(indexes, o);
+		return elementsForIndexes(indexes, objectCache);
 	}
 
-	private List<Integer> indexesForElement(int element, List<Integer> l) {
+	private List<Integer> indexesForElement(int element, List<Integer> elementCache) {
 		List<Integer> indexes = new ArrayList<Integer>();
-		int index = l.indexOf(element);
-	    int lastIndex = l.lastIndexOf(element);
+		int index = elementCache.indexOf(element);
+	    int lastIndex = elementCache.lastIndexOf(element);
 		indexes.add(index);
 		while (index < lastIndex) {
-			List<Integer> subList = l.subList(index + 1, lastIndex);
+			List<Integer> subList = elementCache.subList(index + 1, lastIndex);
 			int subIndex = subList.indexOf(element);
 			if (subIndex != -1) {
 				index = index + 1 + subIndex;
@@ -91,10 +93,10 @@ public class InfoStore {
 		return indexes;
 	}
 	
-	private List<Integer> subListForIndexes(List<Integer> indexes, List<Integer> l) {
+	private List<Integer> elementsForIndexes(List<Integer> indexes, List<Integer> elementCache) {
 		List<Integer> subList = new ArrayList<Integer>();
 		for(int i = 0; i < indexes.size(); i++) {
-			subList.add(l.get(i));
+			subList.add(elementCache.get(i));
 		}
 		return subList;
 	}
