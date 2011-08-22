@@ -8,6 +8,12 @@ public class Environment {
 	public int maxSize;
 	public int stepCount = 0;
 	
+	Environment() {
+		for (int i = 0; i < 50; i++) {
+			actors.add(new Actor());
+		}
+	}
+	
 	public void clear() {
 		actors.clear();
 		events.clear();
@@ -32,6 +38,7 @@ public class Environment {
 		//Actor death check
 		for (int i = 0; i < actors.size(); i++) {
 			if (actors.get(i).isDead()) {
+				System.out.println("Removing dead actor...");
 				actors.remove(i);
 			}
 		}
@@ -49,21 +56,25 @@ public class Environment {
 		}
 
 		//Actor sensing
+		System.out.println("Actors sensing...");
 		for (int i = 0; i < actors.size(); i++) {
 			actors.get(i).sense(events);
 		}
 		
 		//Actor induction
+		System.out.println("Actors induction...");
 		for (int i = 0; i < actors.size(); i++) {
 			actors.get(i).induct();
 		}
 		
 		//Actor deduction
+		System.out.println("Actors deduction...");
 		for (int i = 0; i < actors.size(); i++) {
 			actors.get(i).deduct();
 		}
 		
 		//Actor actuation
+		System.out.println("Actors actuation...");
 		for (int i = 0; i < actors.size(); i++) {
 			List<Event> createdEvents = actors.get(i).actuate();
 			allCreatedEvents.addAll(createdEvents);
@@ -74,6 +85,7 @@ public class Environment {
 		for (int i = 0; i < allCreatedEvents.size(); i++) {
 			Event createdEvent = allCreatedEvents.get(i);
 			if (createdEvent.isReproductionEvent()) {
+				System.out.println("Reproducing actor...");
 				Actor newActor = actors.get(i).reproduce(createdEvent);
 				actors.add(newActor);
 			}
