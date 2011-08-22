@@ -3,8 +3,8 @@ import java.util.List;
 
 
 public class Environment {
-	private List<Actor> actors = new ArrayList<Actor>();
-	private List<Event> events = new ArrayList<Event>();
+	public List<Actor> actors = new ArrayList<Actor>();
+	public List<Event> events = new ArrayList<Event>();
 	public int maxSize;
 	public int stepCount = 0;
 	
@@ -13,19 +13,17 @@ public class Environment {
 		events.clear();
 	}
 	
-	public boolean addActor(Actor newActor) {
-		//TODO: Check maxSize before adding actor
-		actors.add(newActor);
-		return true;
-	}
-	
-	public boolean addEvent(Event newEvent) {
-		//TODO: Check maxSize before adding event
-		events.add(newEvent);
-		return true;
+	public boolean isDead() {
+		if (actors.size() == 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	public List<Event> step(int stepCost) {
+		List<Event> allCreatedEvents = new ArrayList<Event>();
+
 		//Extract cost to execute this step
 		for (int i = 0; i < actors.size(); i++) {
 			actors.get(i).extractCost(stepCost);
@@ -44,6 +42,11 @@ public class Environment {
 				events.remove(i);
 			}
 		}
+		
+		//Return if there are no actors
+		if (actors.size() == 0) {
+			return allCreatedEvents;
+		}
 
 		//Actor sensing
 		for (int i = 0; i < actors.size(); i++) {
@@ -61,7 +64,6 @@ public class Environment {
 		}
 		
 		//Actor actuation
-		List<Event> allCreatedEvents = new ArrayList<Event>();
 		for (int i = 0; i < actors.size(); i++) {
 			List<Event> createdEvents = actors.get(i).actuate();
 			allCreatedEvents.addAll(createdEvents);

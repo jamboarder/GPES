@@ -4,7 +4,7 @@ public class Info {
 	public int p;
 	public int o;
 	
-	public Info() {
+	Info() {
 		s = 0;
 		p = 0;
 		o = 0;

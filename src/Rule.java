@@ -6,7 +6,7 @@ public class Rule {
 	public List<Info> matchRule;
 	public List<Info> actionRule;
 	
-	public Rule() {
+	Rule() {
 		matchRule = new ArrayList<Info>();
 		actionRule = new ArrayList<Info>();
 	}
