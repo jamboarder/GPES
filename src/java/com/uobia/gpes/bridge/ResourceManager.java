@@ -1,3 +1,4 @@
+package com.uobia.gpes.bridge;
 
 public class ResourceManager {
 	double costScale = 1.0;

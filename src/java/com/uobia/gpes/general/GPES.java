@@ -1,3 +1,7 @@
+package com.uobia.gpes.general;
+import com.uobia.gpes.bridge.Bridge;
+import com.uobia.gpes.environment.Environment;
+
 
 public class GPES {
 
@@ -6,12 +10,12 @@ public class GPES {
 	 */
 	public static void main(String[] args) {
 		System.out.println("This is the General Purpose Evolutionary System");
-		Environment environment = new Environment();
-		Interface iface = new Interface(environment);
+		Environment environment = Environment.create();
+		Bridge bridge = Bridge.create(environment);
 		//TODO: Create application-specific translators and resource manager
 		//      and add to the interface.
-		iface.minInterval = 1000;
-		iface.animate();
+		bridge.minInterval = 1000;
+		bridge.animate();
 	}
 
 }

@@ -1,5 +1,8 @@
+package com.uobia.gpes.bridge;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.uobia.gpes.event.Event;
 
 
 public class EventTranslator {

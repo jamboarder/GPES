@@ -1,0 +1,97 @@
+package com.uobia.gpes.actor;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+
+import com.uobia.gpes.model.Info;
+import com.uobia.gpes.model.InfoStore;
+
+
+public class Actor {
+	private InfoStore infoStore;
+	
+	private Actor(int id) {
+		infoStore = InfoStore.create();
+		setId(id);
+	}
+
+	public static Actor create(int id) {
+		Actor actor = new Actor(id);
+		return actor;
+	}
+
+	public static Actor create() {
+		int id = 0;
+		Actor actor = Actor.create(id);
+		return actor;
+	}
+	
+	public int getId() {
+		Info dummyIdInfo = Info.create(Info.THIS, Info.HAS_ID, 0);
+		List<Integer> idIndex = infoStore.indexesForInfo(dummyIdInfo, EnumSet.of(InfoStore.MatchElement.MatchSubject, InfoStore.MatchElement.MatchPredicate));
+		if (!idIndex.isEmpty()) {
+			Info idInfo = infoStore.get(idIndex.get(0));
+			return idInfo.getO();
+		} else {
+			return -1;
+		}
+	}
+
+	public boolean equals(Object object) {
+    	if ( this == object ) return true;
+    	if ( !(object instanceof Actor) ) return false;
+    	Actor actor = (Actor)object;
+		return this.infoStore.equals(actor.infoStore());
+	}
+	
+	public InfoStore infoStore() {
+		return infoStore;
+	}
+
+	public void setInfoStore(InfoStore infoStore) {
+		this.infoStore = infoStore;		
+	}
+
+	public List<Rule> getSensorRules() {
+		List<Rule> rules = new ArrayList<Rule>();
+		//TODO: Finish implementation
+		return rules;
+	}
+	
+	public List<Rule> getInductorRules() {
+		List<Rule> rules = new ArrayList<Rule>();
+		//TODO: Finish implementation
+		return rules;
+	}
+	
+	public List<Rule> getDeductorRules() {
+		List<Rule> rules = new ArrayList<Rule>();
+		//TODO: Finish implementation
+		return rules;
+	}
+	
+
+	public List<Rule> getActuatorRules() {
+		List<Rule> rules = new ArrayList<Rule>();
+		//TODO: Finish implementation
+		return rules;
+	}
+
+	public List<Rule> getMutationRules() {
+		List<Rule> rules = new ArrayList<Rule>();
+		//TODO: Finish implementation
+		return rules;
+	}
+	
+	public void addRule(Rule rule) {
+		// TODO Finish Implementation
+	}
+	
+	private void setId(int id) {
+		Info idInfo = Info.create(Info.THIS, Info.HAS_ID, id);
+		List<Integer> idIndex = infoStore.indexesForInfo(idInfo, EnumSet.of(InfoStore.MatchElement.MatchSubject, InfoStore.MatchElement.MatchPredicate));
+		infoStore.removeAll(idIndex);
+		infoStore.add(idInfo);
+	}
+}

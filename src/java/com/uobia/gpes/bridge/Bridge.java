@@ -1,18 +1,27 @@
+package com.uobia.gpes.bridge;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.uobia.gpes.environment.Environment;
+import com.uobia.gpes.event.Event;
 
-public class Interface {
+
+public class Bridge {
 	public List<EventTranslator> eventTranslators = new ArrayList<EventTranslator>();
 	public List<BehaviorTranslator> behaviorTranslators = new ArrayList<BehaviorTranslator>();
 	public List<ResourceManager> resourceManagers = new ArrayList<ResourceManager>();
-	public Environment environment = new Environment();
+	public Environment environment;
 	public long minInterval = 0;
 	public long maxStepCount = 1000;
 	public boolean stop = false;
 	
-	Interface(Environment e) {
+	private Bridge(Environment e) {
 		environment = e;
+	}
+	
+	public static Bridge create(Environment e) {
+		Bridge bridge = new Bridge(e);
+		return bridge;
 	}
 	
 	public void addEventTranslator(EventTranslator newEventTranslator) {
