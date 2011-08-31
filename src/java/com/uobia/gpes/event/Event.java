@@ -43,6 +43,12 @@ public class Event {
 		this.infoStore = infoStore;
 	}
 	
+	public boolean equals(Object object) {
+    	if ( this == object ) return true;
+    	if ( !(object instanceof Event) ) return false;
+    	Event event = (Event)object;
+		return this.infoStore.equals(event.infoStore());
+	}
 	private void setCreatorId(int creatorId) {
 		Info idInfo = Info.create(Info.THIS, Info.CREATED_BY, creatorId);
 		List<Integer> idIndex = infoStore.indexesForInfo(idInfo, EnumSet.of(InfoStore.MatchElement.MatchSubject, InfoStore.MatchElement.MatchPredicate));

@@ -9,6 +9,24 @@ import com.uobia.gpes.model.InfoStore;
 
 public class EventTest {
 	@Test
+	public void shouldBeEqual() {
+		Event e1 = Event.create();
+		e1.infoStore().add(Info.create(1, 2, 3));
+		Event e2 = Event.create();
+		e2.infoStore().add(Info.create(1, 2, 3));
+		Assert.assertTrue("Events with same info should be equal", e1.equals(e2));
+	}
+	
+	@Test
+	public void shouldNotBeEqual() {
+		Event e1 = Event.create();
+		e1.infoStore().add(Info.create(1, 2, 3));
+		Event e2 = Event.create();
+		e2.infoStore().add(Info.create(3, 4, 5));
+		Assert.assertFalse("Events with different info should not be equal", e1.equals(e2));
+	}
+	
+	@Test
 	public void shouldReturnInfoStore() {
 		InfoStore infoStore = InfoStore.create();
 		Info info = Info.create(1, 2, 3);
@@ -16,7 +34,6 @@ public class EventTest {
 		Event event = Event.create();
 		event.setInfoStore(infoStore);
 		Assert.assertTrue("Should return infoStore", event.infoStore().get(0).equals(info));
-		
 	}
 	
 	@Test

@@ -56,6 +56,15 @@ public class Environment {
     public List<Event> getEvents() {
         return events;
     }
+    
+	public boolean equals(Object object) {
+    	if ( this == object ) return true;
+    	if ( !(object instanceof Environment) ) return false;
+    	Environment env = (Environment)object;
+    	boolean isEqual = this.actors.equals(env.getActors()) &&
+    			          this.events.equals(env.getEvents());
+    	return isEqual;
+	}
 
 	public List<Event> step(int stepCost) {
 		List<Event> newEvents = new ArrayList<Event>();

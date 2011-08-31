@@ -7,13 +7,13 @@ import com.uobia.gpes.event.Event;
 
 
 public class Bridge {
-	public List<EventTranslator> eventTranslators = new ArrayList<EventTranslator>();
-	public List<BehaviorTranslator> behaviorTranslators = new ArrayList<BehaviorTranslator>();
-	public List<ResourceManager> resourceManagers = new ArrayList<ResourceManager>();
-	public Environment environment;
-	public long minInterval = 0;
-	public long maxStepCount = 1000;
-	public boolean stop = false;
+	private List<EventTranslator> eventTranslators = new ArrayList<EventTranslator>();
+	private List<BehaviorTranslator> behaviorTranslators = new ArrayList<BehaviorTranslator>();
+	private List<ResourceManager> resourceManagers = new ArrayList<ResourceManager>();
+	private final Environment environment;
+	private int minInterval = 0;
+	private long maxStepCount = 1000;
+	private boolean stop = false;
 	
 	private Bridge(Environment e) {
 		environment = e;
@@ -24,12 +24,36 @@ public class Bridge {
 		return bridge;
 	}
 	
-	public void addEventTranslator(EventTranslator newEventTranslator) {
-		eventTranslators.add(newEventTranslator);
+	public Environment getEnvironment() {
+		return environment;
 	}
 	
-	public void addBehaviorTranslator(BehaviorTranslator newBehaviorTranslator) {
-		behaviorTranslators.add(newBehaviorTranslator);
+	public int getMinInterval() {
+		return minInterval;
+	}
+
+	public void setMinInterval(int minInterval) {
+		this.minInterval = minInterval;
+	}
+
+	public long getMaxStepCount() {
+		return maxStepCount;
+	}
+
+	public void setMaxStepCount(long maxStepCount) {
+		this.maxStepCount = maxStepCount;
+	}
+
+	public List<EventTranslator> eventTranslators() {
+		return eventTranslators;
+	}
+	
+	public List<BehaviorTranslator> behaviorTranslators() {
+		return behaviorTranslators;
+	}
+	
+	public List<ResourceManager> resourceManagers() {
+		return resourceManagers;
 	}
 	
 	public void animate() {

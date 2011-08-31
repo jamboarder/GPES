@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import com.uobia.gpes.actor.Actor;
 import com.uobia.gpes.event.Event;
+import com.uobia.gpes.model.Info;
 
 public class EnvironmentTest {
 	@Test
@@ -35,9 +36,48 @@ public class EnvironmentTest {
 		environment.addEvents(generateTestEvents());
 		environment.clear();
 		Assert.assertTrue("Environment should be cleared", environment.getActors().isEmpty() && environment.getEvents().isEmpty());
-		
 	}
 	
+	@Test
+	public void shouldBeEqual() {
+		Environment e1 = Environment.create();
+		Environment e2 = Environment.create();
+		Actor actor = Actor.create();
+		actor.infoStore().add(Info.create(1, 2, 3));
+		List<Actor> actors = new ArrayList<Actor>();
+		actors.add(actor);
+		e1.addActors(actors);
+		e2.addActors(actors);
+		Event event = Event.create();
+		event.infoStore().add(Info.create(4, 5, 6));
+		List<Event> events = new ArrayList<Event>();
+		events.add(event);
+		e1.addEvents(events);
+		e2.addEvents(events);
+		Assert.assertTrue("Environments with the same actors and events should be equal", e1.equals(e2));
+	}
+	
+	@Test
+	public void shouldNotBeEqual() {
+		Environment e1 = Environment.create();
+		Environment e2 = Environment.create();
+		Actor actor1 = Actor.create();
+		actor1.infoStore().add(Info.create(1, 2, 3));
+		List<Actor> actors = new ArrayList<Actor>();
+		actors.add(actor1);
+		e1.addActors(actors);
+		Actor actor2 = Actor.create();
+		actor2.infoStore().add(Info.create(7, 8, 9));
+		actors.add(actor2);
+		e2.addActors(actors);
+		Event event = Event.create();
+		event.infoStore().add(Info.create(4, 5, 6));
+		List<Event> events = new ArrayList<Event>();
+		events.add(event);
+		e1.addEvents(events);
+		e2.addEvents(events);
+		Assert.assertFalse("Environments with different actors or events should not be equal", e1.equals(e2));
+	}
 	@Test
 	public void shouldBeDead() {
 		Environment environment = Environment.create();

@@ -1,18 +1,17 @@
 package com.uobia.gpes.bridge;
 
-public class ResourceManager {
-	double costScale = 1.0;
+public interface ResourceManager {
 	
-	public int stepCost() {
-		//TODO: Finish implementation
-		return 0;
-	}
+	/**
+	 * A resource manager provides the cost associated with each environment step. The cost
+	 * can be determined by any means, but must vary according to some desired condition.  Step costs
+	 * should be lowered as more desirable conditions are satisfied and increased as conditions become less desirable.
+	 */
 	
-	public void setCostScale(double scale) {
-		//TODO: Finish implementation
-		if (scale >= 0 || scale <= 1.0)  {
-			costScale = scale;
-		}
-		return;
-	}
+	/**
+	 * Returns the cost to be imposed for the next environment step
+	 * @return stepCost
+	 */
+	public int stepCost();
+	
 }

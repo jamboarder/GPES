@@ -12,9 +12,9 @@ public class GPES {
 		System.out.println("This is the General Purpose Evolutionary System");
 		Environment environment = Environment.create();
 		Bridge bridge = Bridge.create(environment);
-		//TODO: Create application-specific translators and resource manager
+		//TODO: Create application-specific translators and resource managers
 		//      and add to the interface.
-		bridge.minInterval = 1000;
+		bridge.setMinInterval(1000);
 		bridge.animate();
 	}
 
