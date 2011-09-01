@@ -3,17 +3,18 @@ package com.uobia.gpes.actor;
 import java.util.List;
 
 import com.uobia.gpes.model.Info;
+import com.uobia.gpes.model.MatchRule;
 
 public class Deductor {
 
-	public static List<Integer> find(Actor actor, Rule deductorRule) {
-		List<Info> matchRule = deductorRule.getMatchRule();
+	public static List<Integer> find(Actor actor, ActorRule deductorRule) {
+		List<MatchRule> matchRule = deductorRule.getMatchRules();
 		List<Integer> matchedIndexes = actor.infoStore().matchIndexes(matchRule);
 		return matchedIndexes;
 	}
 
 	public static void findAndAct(Actor actor) {
-		List<Rule> deductorRules = actor.getInductorRules();
+		List<ActorRule> deductorRules = actor.getInductorRules();
 		for (int i = 0; i < deductorRules.size(); i++) {
 			List<Integer> matchedIndexes = find(actor, deductorRules.get(i));
 			List<Info> actionRule = deductorRules.get(i).getActionRule();

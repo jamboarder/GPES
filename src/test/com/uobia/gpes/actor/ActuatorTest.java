@@ -6,7 +6,6 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.uobia.gpes.actor.Rule.RuleType;
 import com.uobia.gpes.event.Event;
 import com.uobia.gpes.model.Info;
 
@@ -42,9 +41,9 @@ public class ActuatorTest {
 		Assert.assertTrue("Should match and act", false);
 	}
 
-	private static Rule actuatorTestRule() {
-		Rule rule = Rule.create();
-		rule.setRuleType(RuleType.ActuatorRule);
+	private static ActorRule actuatorTestRule() {
+		ActorRule rule = ActorRule.create();
+		rule.setRuleType(ActorRule.RuleType.ActuatorRule);
 		// TODO create test actuator rule
 		return rule;
 	}

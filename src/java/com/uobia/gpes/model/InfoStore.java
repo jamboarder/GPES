@@ -98,13 +98,13 @@ public class InfoStore {
 		return (this.infoCollection.equals(infoStore.allInfo()));
 	}
 	
-	public List<Info> matchInfo(List<Info> matchRule) {
+	public List<Info> matchInfo(MatchRule matchRule) {
 		List<Info> matches = new ArrayList<Info>();
 		//TODO: Finish implementation
 		return matches;
 	}
 	
-	public List<Integer> matchIndexes(List<Info> matchRule) {
+	public List<Integer> matchIndexes(List<MatchRule> matchRule) {
 		// TODO: Finish implementation
 		return null;
 	}

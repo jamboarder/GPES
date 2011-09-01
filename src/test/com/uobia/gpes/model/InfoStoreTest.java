@@ -207,7 +207,7 @@ public class InfoStoreTest {
 	
 	@Test 
 	public void shouldMatch() {
-		List<Info> matchRule = testMatchRule();
+		MatchRule matchRule = testMatchRule();
 		InfoStore infoStore = InfoStore.create();
 		infoStore.addAll(testMatchableInfo());
 		List<Info> matchedInfo = infoStore.matchInfo(matchRule);
@@ -216,7 +216,7 @@ public class InfoStoreTest {
 
 	@Test 
 	public void shouldNotMatch() {
-		List<Info> matchRule = testMatchRule();
+		MatchRule matchRule = testMatchRule();
 		InfoStore infoStore = InfoStore.create();
 		infoStore.addAll(testUnMatchableInfo());
 		List<Info> matchedInfo = infoStore.matchInfo(matchRule);
@@ -235,11 +235,9 @@ public class InfoStoreTest {
 		return testData;
 	}
 
-	private List<Info> testMatchRule() {
+	private MatchRule testMatchRule() {
 		//TODO: Define requirements for rule validation
-		List<Info> matchRule = new ArrayList<Info>();
-		matchRule.add(Info.create(1, 2, 3));
-		matchRule.add(Info.create(3, 4, 5));
+		MatchRule matchRule = MatchRule.create(0);
 		return matchRule;
 	}
 }

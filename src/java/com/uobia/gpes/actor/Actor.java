@@ -53,38 +53,38 @@ public class Actor {
 		this.infoStore = infoStore;		
 	}
 
-	public List<Rule> getSensorRules() {
-		List<Rule> rules = new ArrayList<Rule>();
+	public List<ActorRule> getSensorRules() {
+		List<ActorRule> rules = new ArrayList<ActorRule>();
 		//TODO: Finish implementation
 		return rules;
 	}
 	
-	public List<Rule> getInductorRules() {
-		List<Rule> rules = new ArrayList<Rule>();
+	public List<ActorRule> getInductorRules() {
+		List<ActorRule> rules = new ArrayList<ActorRule>();
 		//TODO: Finish implementation
 		return rules;
 	}
 	
-	public List<Rule> getDeductorRules() {
-		List<Rule> rules = new ArrayList<Rule>();
+	public List<ActorRule> getDeductorRules() {
+		List<ActorRule> rules = new ArrayList<ActorRule>();
 		//TODO: Finish implementation
 		return rules;
 	}
 	
 
-	public List<Rule> getActuatorRules() {
-		List<Rule> rules = new ArrayList<Rule>();
+	public List<ActorRule> getActuatorRules() {
+		List<ActorRule> rules = new ArrayList<ActorRule>();
 		//TODO: Finish implementation
 		return rules;
 	}
 
-	public List<Rule> getMutationRules() {
-		List<Rule> rules = new ArrayList<Rule>();
+	public List<ActorRule> getMutationRules() {
+		List<ActorRule> rules = new ArrayList<ActorRule>();
 		//TODO: Finish implementation
 		return rules;
 	}
 	
-	public void addRule(Rule rule) {
+	public void addRule(ActorRule rule) {
 		// TODO Finish Implementation
 	}
 	

@@ -6,7 +6,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.uobia.gpes.actor.Rule.RuleType;
+import com.uobia.gpes.actor.ActorRule.RuleType;
 import com.uobia.gpes.model.Info;
 
 public class InductorTest {
@@ -72,28 +72,28 @@ public class InductorTest {
 		return testInfo;
 	}
 
-	private static Rule inductorTestRule() {
-		Rule rule = Rule.create();
+	private static ActorRule inductorTestRule() {
+		ActorRule rule = ActorRule.create();
 		rule.setRuleType(RuleType.InductorRule);
 		// TODO create test inductor rule
 		return rule;
 	}
 	
-	private static Rule inductorAddTestRule() {
-		Rule rule = Rule.create();
+	private static ActorRule inductorAddTestRule() {
+		ActorRule rule = ActorRule.create();
 		rule.setRuleType(RuleType.InductorRule);
 		// TODO create test inductor add rule
 		return rule;
 	}
 
-	private static Rule inductorModifyTestRule() {
-		Rule rule = Rule.create();
+	private static ActorRule inductorModifyTestRule() {
+		ActorRule rule = ActorRule.create();
 		rule.setRuleType(RuleType.InductorRule);
 		// TODO create test inductor add rule
 		return rule;
 	}
-	private static Rule inductorRemoveTestRule() {
-		Rule rule = Rule.create();
+	private static ActorRule inductorRemoveTestRule() {
+		ActorRule rule = ActorRule.create();
 		rule.setRuleType(RuleType.InductorRule);
 		// TODO create test inductor add rule
 		return rule;

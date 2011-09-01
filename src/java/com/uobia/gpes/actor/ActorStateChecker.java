@@ -2,7 +2,7 @@ package com.uobia.gpes.actor;
 
 import java.util.List;
 
-import com.uobia.gpes.model.Info;
+import com.uobia.gpes.model.MatchRule;
 
 public class ActorStateChecker {
 
@@ -37,9 +37,9 @@ public class ActorStateChecker {
 	}
 
 	private static boolean deathConditionB1(Actor actor) {
-		List<Rule> actuatorRules = actor.getActuatorRules();
+		List<ActorRule> actuatorRules = actor.getActuatorRules();
 		for (int i = 0; i < actuatorRules.size(); i++) {
-			List<Info> matchRule = actuatorRules.get(i).getMatchRule();
+			List<MatchRule> matchRule = actuatorRules.get(i).getMatchRules();
 			if (!actor.infoStore().matchIndexes(matchRule).isEmpty()) {
 				return false;
 			}

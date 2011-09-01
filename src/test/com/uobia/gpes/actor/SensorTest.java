@@ -6,7 +6,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.uobia.gpes.actor.Rule.RuleType;
+import com.uobia.gpes.actor.ActorRule.RuleType;
 import com.uobia.gpes.event.Event;
 import com.uobia.gpes.model.Info;
 
@@ -69,21 +69,21 @@ public class SensorTest {
 		return events;
 	}
 
-	public static final Rule detectsAllSensorTestRule() {
-		Rule rule = Rule.create();
+	public static final ActorRule detectsAllSensorTestRule() {
+		ActorRule rule = ActorRule.create();
 		rule.setRuleType(RuleType.SensorRule);
 		//TODO: Add Sensor match and action rules
 		return rule;
 	}
 
-	public static final Rule detectsSomeSensorTestRule() {
-		Rule rule = Rule.create();
+	public static final ActorRule detectsSomeSensorTestRule() {
+		ActorRule rule = ActorRule.create();
 		rule.setRuleType(RuleType.SensorRule);
 		//TODO: Add Sensor match and action rules
 		return rule;
 	}
-	public static final Rule detectsNothingSensorTestRule() {
-		Rule rule = Rule.create();
+	public static final ActorRule detectsNothingSensorTestRule() {
+		ActorRule rule = ActorRule.create();
 		rule.setRuleType(RuleType.SensorRule);
 		//TODO: Add Sensor match and action rules
 		return rule;

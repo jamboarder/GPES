@@ -6,7 +6,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.uobia.gpes.actor.Rule.RuleType;
+import com.uobia.gpes.actor.ActorRule.RuleType;
 import com.uobia.gpes.model.Info;
 
 public class DeductorTest {
@@ -72,28 +72,28 @@ public class DeductorTest {
 		return testInfo;
 	}
 
-	private static Rule deductorTestRule() {
-		Rule rule = Rule.create();
+	private static ActorRule deductorTestRule() {
+		ActorRule rule = ActorRule.create();
 		rule.setRuleType(RuleType.DeductorRule);
 		// TODO create test deductor rule
 		return rule;
 	}
 	
-	private static Rule deductorAddTestRule() {
-		Rule rule = Rule.create();
+	private static ActorRule deductorAddTestRule() {
+		ActorRule rule = ActorRule.create();
 		rule.setRuleType(RuleType.DeductorRule);
 		// TODO create test deductor add rule
 		return rule;
 	}
 
-	private static Rule deductorModifyTestRule() {
-		Rule rule = Rule.create();
+	private static ActorRule deductorModifyTestRule() {
+		ActorRule rule = ActorRule.create();
 		rule.setRuleType(RuleType.DeductorRule);
 		// TODO create test deductor add rule
 		return rule;
 	}
-	private static Rule deductorRemoveTestRule() {
-		Rule rule = Rule.create();
+	private static ActorRule deductorRemoveTestRule() {
+		ActorRule rule = ActorRule.create();
 		rule.setRuleType(RuleType.DeductorRule);
 		// TODO create test deductor add rule
 		return rule;
