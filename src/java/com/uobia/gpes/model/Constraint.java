@@ -22,10 +22,14 @@ public class Constraint {
 	private final int id;
 	private List<Info> infoCollection;
 
-	Constraint(int id) {
+	private Constraint(int id) {
 		this.id = id;
 		infoCollection = new ArrayList<Info>();
 		infoCollection.add(Info.create(this.id, Info.IS_TYPE, Info.TYPE_CONSTRAINT));
+	}
+	
+	public static Constraint create(int id) {
+		return new Constraint(id);
 	}
 	
 	public int getId() {

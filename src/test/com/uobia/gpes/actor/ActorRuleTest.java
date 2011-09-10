@@ -69,7 +69,7 @@ public class ActorRuleTest {
 		ActorRule rule = ActorRule.create();
 		List<Info> actionRule = ActorRuleTest.createValidTestActionRule();
 		rule.setActionRule(actionRule);
-		Assert.assertTrue("Should be valid Action rule", rule.isValidActionRule());
+		Assert.assertTrue("Should be valid action rule", rule.isValidActionRule());
 	}
 	
 	@Test
@@ -77,7 +77,7 @@ public class ActorRuleTest {
 		ActorRule rule = ActorRule.create();
 		List<Info> actionRule = ActorRuleTest.createInvalidTestActionRule();
 		rule.setActionRule(actionRule);
-		Assert.assertFalse("Should be invalid match rule", rule.isValidMatchRule());
+		Assert.assertFalse("Should be invalid action rule", rule.isValidMatchRule());
 	}
 	
 	public static MatchRule createValidTestMatchRule() {
