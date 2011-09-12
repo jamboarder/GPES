@@ -2,6 +2,7 @@ package com.uobia.gpes.actor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -12,22 +13,24 @@ import com.uobia.gpes.model.MatchRule;
 public class ActorRuleTest {
 	@Test
 	public void shouldSetRuleType() {
-		ActorRule rule = ActorRule.create();
-		rule.setRuleType(ActorRule.RuleType.SensorRule);
-		Assert.assertTrue("Should set rule type to sensor", rule.getRuleType() == ActorRule.RuleType.SensorRule);
-		rule.setRuleType(ActorRule.RuleType.ActuatorRule);
-		Assert.assertTrue("Should set rule type to actuator", rule.getRuleType() == ActorRule.RuleType.ActuatorRule);
-		rule.setRuleType(ActorRule.RuleType.InductorRule);
-		Assert.assertTrue("Should set rule type to inductor", rule.getRuleType() == ActorRule.RuleType.InductorRule);
-		rule.setRuleType(ActorRule.RuleType.DeductorRule);
-		Assert.assertTrue("Should set rule type to deductor", rule.getRuleType() == ActorRule.RuleType.DeductorRule);
-		rule.setRuleType(ActorRule.RuleType.MutationRule);
-		Assert.assertTrue("Should set rule type to deductor", rule.getRuleType() == ActorRule.RuleType.MutationRule);
+		final ActorRule.RuleType[] rType = {
+			ActorRule.RuleType.ActuatorRule,
+			ActorRule.RuleType.DeductorRule,
+			ActorRule.RuleType.InductorRule,
+			ActorRule.RuleType.SensorRule
+		};
+		
+		for (ActorRule.RuleType r: rType) {
+			int id = new Random().nextInt();
+			ActorRule rule = ActorRule.create(id, r);
+			Assert.assertEquals("Should set rule type", r, rule.getRuleType());
+			Assert.assertEquals("Should set id", id, rule.getId());
+		}
 	}
 	
 	@Test
 	public void shouldSetMatchRule() {
-		ActorRule rule = ActorRule.create();
+		ActorRule rule = ActorRule.create(new Random().nextInt(), ActorRule.RuleType.SensorRule);
 		MatchRule matchRule = ActorRuleTest.createValidTestMatchRule();
 		rule.addMatchRule(matchRule);
 		List<MatchRule> storedMatchRules = rule.getMatchRules();

@@ -7,7 +7,7 @@ import com.uobia.gpes.model.MatchRule;
 
 
 public class ActorRule {
-	/**
+	/*
 	 * Example sensor rule
 	 * s1, IS_TYPE, TYPE_SENSOR_RULE
 	 * s1, HAS_PART, m1
@@ -25,7 +25,7 @@ public class ActorRule {
 	private List<Info> actionRule;
 	private List<MatchRule> matchRules;
 	private List<Info> ruleInfo;
-	private RuleType ruleType;
+	private final RuleType ruleType;
 	private final int id;
 	
 	private ActorRule(int id, RuleType ruleType) {
@@ -34,14 +34,14 @@ public class ActorRule {
 		ruleInfo = new ArrayList<Info>();
 		
 		this.id = id;
-		setRuleType(ruleType);
+		this.ruleType = ruleType;
 		ruleInfo.add(Info.create(id, Info.IS_TYPE, infoForRuleType(ruleType)));
 	}
 	
-	public final static ActorRule create() {
+	/*public final static ActorRule create() {
 		ActorRule rule = ActorRule.create(0, RuleType.SensorRule);
 		return rule;
-	}
+	}*/
 	
 	public final static ActorRule create(int id, RuleType ruleType) {
 		ActorRule rule = new ActorRule(id, ruleType);
@@ -81,10 +81,6 @@ public class ActorRule {
 
 	public RuleType getRuleType() {
 		return ruleType;
-	}
-
-	public void setRuleType(RuleType ruleType) {
-		this.ruleType = ruleType;
 	}
 
 	public boolean isValidMatchRule() {

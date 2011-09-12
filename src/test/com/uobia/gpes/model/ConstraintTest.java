@@ -1,5 +1,6 @@
 package com.uobia.gpes.model;
 
+import java.lang.instrument.UnmodifiableClassException;
 import java.util.List;
 
 import org.junit.Assert;
@@ -24,7 +25,7 @@ public class ConstraintTest {
 		Constraint constraint = Constraint.create(id);
 		int value = 987;
 		Constraint.Comparator comp = Constraint.Comparator.Equals;
-		constraint.addConstraint(comp, value);
+		constraint.addComparator(comp, value);
 		List<Info> cInfo = constraint.getInfo();
 		boolean compareUsingCorrect = false;
 		boolean compareWithCorrect = false;
@@ -41,5 +42,11 @@ public class ConstraintTest {
 		}
 		Assert.assertTrue("Compare Using Info triple should be correctly created", compareUsingCorrect);
 		Assert.assertTrue("Compare With Info triple should be correctly created", compareWithCorrect);
+	}
+	
+	@Test (expected = UnsupportedOperationException.class)
+	public void shouldNotAlterInfoCollection() {
+		Constraint c = Constraint.create(0);
+		c.getInfo().clear();		
 	}
 }

@@ -31,13 +31,9 @@ public class InfoStoreTest {
 	public void shouldAddInfo() {
 		InfoStore infoStore = InfoStore.create();
 		Info info = Info.create(1, 2, 3);
-		int sizeBefore = infoStore.size();
+		Assert.assertFalse("Should not contain info", infoStore.getInfo().contains(info));
 		infoStore.add(info);
-		int sizeDifference = infoStore.size() - sizeBefore;
-		Assert.assertTrue("Size should increase by one", sizeDifference == 1);
-		
-		int lastIndex = infoStore.size() - 1;
-		Assert.assertTrue("Info retrieved should be info stored", infoStore.get(lastIndex).equals(info));
+		Assert.assertTrue("Info retrieved should be info stored", infoStore.getInfo().contains(info));
 	}
 	
 	@Test

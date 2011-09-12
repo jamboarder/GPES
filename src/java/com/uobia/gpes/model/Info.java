@@ -1,7 +1,10 @@
 package com.uobia.gpes.model;
 
-public class Info {
-    private final int s;
+import java.io.Serializable;
+
+public class Info implements Serializable {
+ 	private static final long serialVersionUID = 1L;
+	private final int s;
     private final int p;
     private final int o;
     
@@ -64,16 +67,33 @@ public class Info {
         }
     }
     
-    public boolean equals(Object object) {
-    	if ( this == object ) return true;
-    	if ( !(object instanceof Info) ) return false;
-    	Info info = (Info)object;
-        if (s == info.getS() && p == info.getP() && o == info.getO()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+    @Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + o;
+		result = prime * result + p;
+		result = prime * result + s;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Info other = (Info) obj;
+		if (o != other.o)
+			return false;
+		if (p != other.p)
+			return false;
+		if (s != other.s)
+			return false;
+		return true;
+	}
 
     public static Info create(int i, int j, int k) {
         Info info = new Info(i, j, k);

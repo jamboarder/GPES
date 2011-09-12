@@ -1,9 +1,13 @@
 package com.uobia.gpes.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
-public class Constraint {
+public class Constraint implements Serializable {
+ 	private static final long serialVersionUID = 1L;
 	/**
 	 * Example sensor rule
 	 * s1, IS_TYPE, TYPE_SENSOR_RULE
@@ -16,7 +20,6 @@ public class Constraint {
 	 * a1, IS_TYPE, TYPE_ACTION_RULE
 	 * ...
 	 */
-	public enum Comparator{LessThan, Equals, GreaterThan};
 	public enum CompareTarget{SFrom, PFrom, OFrom};
 	
 	private final int id;
@@ -36,33 +39,22 @@ public class Constraint {
 		return id;
 	}
 
-	public void addConstraint(Comparator comparator, int value) {
-		infoCollection.add(Info.create(id, Info.COMPARE_USING, infoForComparator(comparator)));
-		infoCollection.add(Info.create(id, Info.COMPARE_WITH_FIXED, value));
+	public void addComparator(final InfoComparator comparator, final int value) {
+		infoCollection.add(Info.create(id, InfoPredicate.COMPARE_USING.getId(), comparator.getId()));
+		infoCollection.add(Info.create(id, InfoPredicate.COMPARE_WITH_FIXED.getId(), value));
 	}
 
-	public void addConstraint(Comparator comparator, CompareTarget target, int matchId) {
-		infoCollection.add(Info.create(id, Info.COMPARE_USING, infoForComparator(comparator)));
+	public void addComparator(final InfoComparator comparator, final CompareTarget target, final int matchId) {
+		infoCollection.add(Info.create(id,InfoPredicate.COMPARE_USING.getId(), comparator.getId()));
 		infoCollection.add(Info.create(id, infoForTarget(target), matchId));
 	}
 	
 	public List<Info> getInfo() {
-		return infoCollection;
-	}
-
-	private int infoForComparator(Comparator comparator) {
-		switch (comparator) {
-		case LessThan:
-			return Info.COMPARATOR_LESS_THAN;
-		case Equals:
-			return Info.COMPARATOR_EQUALS;
-		case GreaterThan:
-			return Info.COMPARATOR_GREATER_THAN;
-		}
-		return 0;
+		return Collections.unmodifiableList(infoCollection);
 	}
 
 	private int infoForTarget(CompareTarget target) {
+		//TODO: Change this to map
 		switch (target) {
 		case SFrom:
 			return Info.COMPARE_WITH_S_FROM;
@@ -73,4 +65,35 @@ public class Constraint {
 		}
 		return 0;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		result = prime * result
+				+ ((infoCollection == null) ? 0 : infoCollection.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Constraint other = (Constraint) obj;
+		if (id != other.id)
+			return false;
+		if (infoCollection == null) {
+			if (other.infoCollection != null)
+				return false;
+		} else if (!infoCollection.equals(other.infoCollection))
+			return false;
+		return true;
+	}
+	
+	
 }

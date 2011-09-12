@@ -1,17 +1,19 @@
 package com.uobia.gpes.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.EnumSet;
+import java.util.Collections;
 import java.util.List;
 
 
-public class InfoStore {
+public class InfoStore implements Serializable {
+ 	private static final long serialVersionUID = 1L;
 	private List<Info> infoCollection;
 	private List<Integer> sCache;
 	private List<Integer> pCache;
 	private List<Integer> oCache;
 	public int maxSize;
-	public enum MatchElement{MatchSubject, MatchPredicate, MatchObject};
+	//public enum MatchElement{MatchSubject, MatchPredicate, MatchObject};
 	
 	private InfoStore() {
 		infoCollection = new ArrayList<Info>();
@@ -28,10 +30,6 @@ public class InfoStore {
 
 	public boolean isEmpty() {
 		return infoCollection.isEmpty();
-	}
-
-	public List<Info> allInfo() {
-		return infoCollection;
 	}
 
 	public void addAll(List<Info> infos) {
@@ -53,6 +51,8 @@ public class InfoStore {
 	
 	public void setMaxSize(int maxSize) {
 		this.maxSize = maxSize;
+		//TODO: resolve how to handle if info collection is bigger than specified
+		//TODO: Look at ArrayBlockingQueue to implement this
 	}
 	
 	public boolean add(Info info) {
@@ -117,7 +117,7 @@ public class InfoStore {
 		return subList;
 	}
 	
-	public List<Integer> indexesForInfo(Info info, EnumSet<MatchElement> matchOn) {
+	/*public List<Integer> indexesForInfo(Info info, EnumSet<MatchElement> matchOn) {
 		if (matchOn.equals(EnumSet.of(MatchElement.MatchSubject))) {
 			return indexesForSubject(info);
 		} else if (matchOn.equals(EnumSet.of(MatchElement.MatchPredicate))) {
@@ -241,5 +241,11 @@ public class InfoStore {
 			subList.add(elementCache.get(i));
 		}
 		return subList;
+	}*/
+
+	public List<Info> getInfo() {
+		return Collections.unmodifiableList(infoCollection);
+		// TODO Auto-generated method stub
+		
 	}
 }
