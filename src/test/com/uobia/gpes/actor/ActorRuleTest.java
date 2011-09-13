@@ -9,18 +9,19 @@ import org.junit.Test;
 
 import com.uobia.gpes.model.Info;
 import com.uobia.gpes.model.MatchRule;
+import com.uobia.gpes.model.MatchRuleFixture;
 
 public class ActorRuleTest {
 	@Test
 	public void shouldSetRuleType() {
-		final ActorRule.RuleType[] rType = {
-			ActorRule.RuleType.ActuatorRule,
-			ActorRule.RuleType.DeductorRule,
-			ActorRule.RuleType.InductorRule,
-			ActorRule.RuleType.SensorRule
+		final ActorRuleType[] rType = {
+			ActorRuleType.TYPE_ACTUATOR_RULE,
+			ActorRuleType.TYPE_SENSOR_RULE,
+			ActorRuleType.TYPE_INDUCTOR_RULE,
+			ActorRuleType.TYPE_DEDUCTOR_RULE
 		};
 		
-		for (ActorRule.RuleType r: rType) {
+		for (ActorRuleType r: rType) {
 			int id = new Random().nextInt();
 			ActorRule rule = ActorRule.create(id, r);
 			Assert.assertEquals("Should set rule type", r, rule.getRuleType());
@@ -30,8 +31,8 @@ public class ActorRuleTest {
 	
 	@Test
 	public void shouldSetMatchRule() {
-		ActorRule rule = ActorRule.create(new Random().nextInt(), ActorRule.RuleType.SensorRule);
-		MatchRule matchRule = ActorRuleTest.createValidTestMatchRule();
+		ActorRule rule = ActorRule.create(new Random().nextInt(), ActorRuleType.TYPE_SENSOR_RULE);
+		MatchRule matchRule = MatchRuleFixture.createValidMatchRule();
 		rule.addMatchRule(matchRule);
 		List<MatchRule> storedMatchRules = rule.getMatchRules();
 		boolean ruleAdded = (storedMatchRules.size() == 1);
@@ -41,7 +42,7 @@ public class ActorRuleTest {
 	
 	@Test
 	public void shouldSetActionRule() {
-		ActorRule rule = ActorRule.create();
+		ActorRule rule = ActorRule.create(0, ActorRuleType.TYPE_SENSOR_RULE);
 		List<Info> actionRule = ActorRuleTest.createValidTestActionRule();
 		rule.setActionRule(actionRule);
 		List<Info> storedMatchRule = rule.getActionRule();
@@ -53,23 +54,23 @@ public class ActorRuleTest {
 	
 	@Test
 	public void shouldBeValidMatchRule() {
-		ActorRule rule = ActorRule.create();
-		MatchRule matchRule = ActorRuleTest.createValidTestMatchRule();
+		ActorRule rule = ActorRule.create(0, ActorRuleType.TYPE_SENSOR_RULE);
+		MatchRule matchRule = MatchRuleFixture.createValidMatchRule();
 		rule.addMatchRule(matchRule);
 		Assert.assertTrue("Should be valid match rule", rule.isValidMatchRule());
 	}
 	
 	@Test
 	public void shouldBeInValidMatchRule() {
-		ActorRule rule = ActorRule.create();
-		MatchRule matchRule = ActorRuleTest.createInvalidTestMatchRule();
+		ActorRule rule = ActorRule.create(0, ActorRuleType.TYPE_SENSOR_RULE);
+		MatchRule matchRule = MatchRuleFixture.createInvalidMatchRule();
 		rule.addMatchRule(matchRule);
 		Assert.assertFalse("Should be invalid match rule", rule.isValidMatchRule());
 	}
 	
 	@Test
 	public void shouldBeValidActionRule() {
-		ActorRule rule = ActorRule.create();
+		ActorRule rule = ActorRule.create(0, ActorRuleType.TYPE_SENSOR_RULE);
 		List<Info> actionRule = ActorRuleTest.createValidTestActionRule();
 		rule.setActionRule(actionRule);
 		Assert.assertTrue("Should be valid action rule", rule.isValidActionRule());
@@ -77,24 +78,13 @@ public class ActorRuleTest {
 	
 	@Test
 	public void shouldBeInValidActionRule() {
-		ActorRule rule = ActorRule.create();
+		ActorRule rule = ActorRule.create(0, ActorRuleType.TYPE_SENSOR_RULE);
 		List<Info> actionRule = ActorRuleTest.createInvalidTestActionRule();
 		rule.setActionRule(actionRule);
 		Assert.assertFalse("Should be invalid action rule", rule.isValidMatchRule());
 	}
 	
-	public static MatchRule createValidTestMatchRule() {
-		//TODO: Define requirements for rule validation
-		MatchRule matchRule = MatchRule.create(0);
-		return matchRule;
-	}
-	
-	public static MatchRule createInvalidTestMatchRule() {
-		//TODO: Define requirements for rule validation
-		MatchRule matchRule = MatchRule.create(0);
-		return matchRule;
-	}
-
+	//TODO: Move these into ActionRuleFixture when it is ready
 	public static List<Info> createValidTestActionRule() {
 		//TODO: Define requirements for rule validation
 		List<Info> matchRule = new ArrayList<Info>();
@@ -109,13 +99,5 @@ public class ActorRuleTest {
 		matchRule.add(Info.create(1, 2, 3));
 		matchRule.add(Info.create(3, 4, 5));
 		return matchRule;
-	}
-	
-	public static ActorRule createValidRule(ActorRule.RuleType ruleType) {
-		ActorRule rule = ActorRule.create();
-		rule.setRuleType(ruleType);
-		rule.addMatchRule(ActorRuleTest.createValidTestMatchRule());
-		rule.setActionRule(ActorRuleTest.createValidTestActionRule());
-		return rule;
 	}
 }

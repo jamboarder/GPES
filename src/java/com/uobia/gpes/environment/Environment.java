@@ -57,15 +57,6 @@ public class Environment {
         return events;
     }
     
-	public boolean equals(Object object) {
-    	if ( this == object ) return true;
-    	if ( !(object instanceof Environment) ) return false;
-    	Environment env = (Environment)object;
-    	boolean isEqual = this.actors.equals(env.getActors()) &&
-    			          this.events.equals(env.getEvents());
-    	return isEqual;
-	}
-
 	public List<Event> step(int stepCost) {
 		List<Event> newEvents = new ArrayList<Event>();
 		List< ArrayList<Actor> > parentActorSets = new ArrayList< ArrayList<Actor> >();
@@ -196,5 +187,36 @@ public class Environment {
 			//TODO Handle multiple parents
 		}
 		parentActorSets.clear();
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((actors == null) ? 0 : actors.hashCode());
+		result = prime * result + ((events == null) ? 0 : events.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Environment other = (Environment) obj;
+		if (actors == null) {
+			if (other.actors != null)
+				return false;
+		} else if (!actors.equals(other.actors))
+			return false;
+		if (events == null) {
+			if (other.events != null)
+				return false;
+		} else if (!events.equals(other.events))
+			return false;
+		return true;
 	}
 }

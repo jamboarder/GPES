@@ -8,59 +8,26 @@ public class Info implements Serializable {
     private final int p;
     private final int o;
     
-    //Subject
-    public static final int THIS = 0;
-    
-    //Predicates
-    public static final int HAS_ID = 0;
-    public static final int IS_TYPE = 1;
-    public static final int CREATED_BY = 2;
-    public static final int HAS_PART = 3; 
-    public static final int MATCH_S = 100;
-    public static final int MATCH_P = 101;
-    public static final int MATCH_O = 102;
-    public static final int COMPARE_USING = 103;
-    public static final int COMPARE_WITH_FIXED = 104;
-    public static final int COMPARE_WITH_S_FROM = 105;
-    public static final int COMPARE_WITH_P_FROM = 106;
-    public static final int COMPARE_WITH_O_FROM = 107;
-
-    //Objects
-    public static final int TYPE_EVENT = 0;
-    public static final int TYPE_REPRODUCTION_EVENT = 1;
-    public static final int TYPE_MUTATION_RULE = 2;
-    public static final int TYPE_SENSOR_RULE = 3;
-    public static final int TYPE_ACTUATOR_RULE = 4;
-    public static final int TYPE_INDUCTOR_RULE = 5;
-    public static final int TYPE_DEDUCTOR_RULE = 6;
-    public static final int TYPE_MATCH_RULE = 7;
-    public static final int TYPE_ACTION_RULE = 8;
-    public static final int TYPE_CONSTRAINT = 9;
-    public static final int COMPARATOR_GREATER_THAN = 100;
-    public static final int COMPARATOR_LESS_THAN = 101;
-    public static final int COMPARATOR_EQUALS = 101;
-    
-    
     private Info(int i, int j, int k) {
         s = i;
         p = j;
         o = k;
     }
     
-    public int getS() {
+    public int getSubject() {
     	return s;
     }
     
-    public int getP() {
+    public int getPredicate() {
     	return p;
     }
     
-    public int getO() {
+    public int getObject() {
     	return o;
     }
     
     public boolean isRelated(Info info) {
-        if (s == info.getO() || o == info.getS()) {
+        if (s == info.getObject() || o == info.getSubject()) {
             return true;
         } else {
             return false;

@@ -1,40 +1,44 @@
 package com.uobia.gpes.actor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.uobia.gpes.actor.ActorRule.RuleType;
 import com.uobia.gpes.model.Info;
+import com.uobia.gpes.model.InfoFixture;
 
 public class DeductorTest {
 	@Test
-	public void shouldFindInfo() {
+	public void shouldFindMatches() {
 		Actor actor = Actor.create();
-		actor.addRule(deductorTestRule());
-		actor.infoStore().addAll(matchableTestInfo());
-		List<Integer> matchedIndexes = Deductor.find(actor, deductorTestRule());
-		List<Info> matchedInfo = actor.infoStore().infoForIndexes(matchedIndexes);
-		Assert.assertTrue("Info should be found", matchedInfo.equals(matchableTestInfo()));
+		List<Info> infos = InfoFixture.createInfo();
+		actor.infoStore().addAll(infos);
+		ActorRule deductorRule = ActorRuleFixture.createMatchingDeductorRule(infos);
+		actor.addRule(deductorRule);
+		List<Integer> matchedIndexes = Actuator.find(actor, deductorRule);
+		List<Integer> correctMatchedIndexes = actor.infoStore().matchIndexes(deductorRule.getMatchRules());
+		Assert.assertTrue("Info should be matched", matchedIndexes.equals(correctMatchedIndexes));
 	}
 
 	@Test
-	public void shouldNotFindInfo() {
+	public void shouldNotMatch() {
 		Actor actor = Actor.create();
-		actor.addRule(deductorTestRule());
-		actor.infoStore().addAll(unMatchableTestInfo());
-		List<Integer> matchedIndexes = Deductor.find(actor, deductorTestRule());
-		List<Info> matchedInfo = actor.infoStore().infoForIndexes(matchedIndexes);
-		Assert.assertFalse("Info should not be found", matchedInfo.equals(matchableTestInfo()));
+		List<Info> infos = InfoFixture.createInfo();
+		actor.infoStore().addAll(infos);
+		ActorRule deductorRule = ActorRuleFixture.createNoMatchDeductorRule(infos);
+		actor.addRule(deductorRule);
+		List<Integer> matchedIndexes = Actuator.find(actor, deductorRule);
+		List<Integer> correctMatchedIndexes = actor.infoStore().matchIndexes(deductorRule.getMatchRules());
+		Assert.assertFalse("Info should not be matched", matchedIndexes.equals(correctMatchedIndexes));
 	}
 
 	@Test
 	public void shouldAddInfo() {
 		Actor actor = Actor.create();
-		actor.addRule(deductorAddTestRule());
-		actor.infoStore().addAll(matchableTestInfo());
+		List<Info> infos = InfoFixture.createInfo();
+		actor.addRule(ActorRuleFixture.createDeductorAddRule(infos));
+		actor.infoStore().addAll(infos);
 		Deductor.findAndAct(actor);
 		//TODO: Define requirements for added info and how to compare with expectation
 		Assert.assertTrue("Should find and add info", false);
@@ -43,8 +47,9 @@ public class DeductorTest {
 	@Test
 	public void shouldModifyInfo() {
 		Actor actor = Actor.create();
-		actor.addRule(deductorModifyTestRule());
-		actor.infoStore().addAll(matchableTestInfo());
+		List<Info> infos = InfoFixture.createInfo();
+		actor.addRule(ActorRuleFixture.createDeductorModifyRule(infos));
+		actor.infoStore().addAll(infos);
 		Deductor.findAndAct(actor);
 		//TODO: Define requirements for added info and how to compare with expectation
 		Assert.assertTrue("Should find and modify info", false);
@@ -53,49 +58,11 @@ public class DeductorTest {
 	@Test
 	public void shouldRemoveInfo() {
 		Actor actor = Actor.create();
-		actor.addRule(deductorRemoveTestRule());
-		actor.infoStore().addAll(matchableTestInfo());
+		List<Info> infos = InfoFixture.createInfo();
+		actor.addRule(ActorRuleFixture.createDeductorRemoveRule(infos));
+		actor.infoStore().addAll(infos);
 		Deductor.findAndAct(actor);
 		//TODO: Define requirements for added info and how to compare with expectation
 		Assert.assertTrue("Should find and remove info", false);
-	}
-
-	private static List<Info> matchableTestInfo() {
-		// TODO Auto-generated method stub
-		List<Info> testInfo = new ArrayList<Info>();
-		return testInfo;
-	}
-
-	private static List<Info> unMatchableTestInfo() {
-		// TODO Auto-generated method stub
-		List<Info> testInfo = new ArrayList<Info>();
-		return testInfo;
-	}
-
-	private static ActorRule deductorTestRule() {
-		ActorRule rule = ActorRule.create();
-		rule.setRuleType(RuleType.DeductorRule);
-		// TODO create test deductor rule
-		return rule;
-	}
-	
-	private static ActorRule deductorAddTestRule() {
-		ActorRule rule = ActorRule.create();
-		rule.setRuleType(RuleType.DeductorRule);
-		// TODO create test deductor add rule
-		return rule;
-	}
-
-	private static ActorRule deductorModifyTestRule() {
-		ActorRule rule = ActorRule.create();
-		rule.setRuleType(RuleType.DeductorRule);
-		// TODO create test deductor add rule
-		return rule;
-	}
-	private static ActorRule deductorRemoveTestRule() {
-		ActorRule rule = ActorRule.create();
-		rule.setRuleType(RuleType.DeductorRule);
-		// TODO create test deductor add rule
-		return rule;
 	}
 }

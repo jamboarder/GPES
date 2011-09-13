@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.uobia.gpes.model.Info;
+import com.uobia.gpes.model.InfoPredicate;
 import com.uobia.gpes.model.MatchRule;
 
 
@@ -21,21 +22,20 @@ public class ActorRule {
 	 */
 	
 	
-	public enum RuleType{SensorRule, ActuatorRule, InductorRule, DeductorRule, MutationRule};
 	private List<Info> actionRule;
 	private List<MatchRule> matchRules;
 	private List<Info> ruleInfo;
-	private final RuleType ruleType;
+	private final ActorRuleType ruleType;
 	private final int id;
 	
-	private ActorRule(int id, RuleType ruleType) {
+	private ActorRule(int id, ActorRuleType ruleType) {
 		setActionRule(new ArrayList<Info>());
 		matchRules = new ArrayList<MatchRule>();
 		ruleInfo = new ArrayList<Info>();
 		
 		this.id = id;
 		this.ruleType = ruleType;
-		ruleInfo.add(Info.create(id, Info.IS_TYPE, infoForRuleType(ruleType)));
+		ruleInfo.add(Info.create(id, InfoPredicate.IS_TYPE.getValue(), ruleType.getValue()));
 	}
 	
 	/*public final static ActorRule create() {
@@ -43,7 +43,7 @@ public class ActorRule {
 		return rule;
 	}*/
 	
-	public final static ActorRule create(int id, RuleType ruleType) {
+	public final static ActorRule create(int id, ActorRuleType ruleType) {
 		ActorRule rule = new ActorRule(id, ruleType);
 		return rule;
 	}
@@ -63,7 +63,7 @@ public class ActorRule {
 	}
 	
 	public void addMatchRule(MatchRule matchRule) {
-		ruleInfo.add(Info.create(id, Info.HAS_PART, matchRule.getId()));
+		ruleInfo.add(Info.create(id, InfoPredicate.HAS_PART.getValue(), matchRule.getId()));
 		matchRules.add(matchRule);
 	}
 
@@ -79,7 +79,7 @@ public class ActorRule {
 		this.actionRule = actionRule;
 	}
 
-	public RuleType getRuleType() {
+	public ActorRuleType getRuleType() {
 		return ruleType;
 	}
 
@@ -92,20 +92,5 @@ public class ActorRule {
 		// TODO Finish implementation
 		return false;
 	}
-
-	private int infoForRuleType(RuleType ruleType) {
-		switch (ruleType) {
-		case SensorRule:
-			return Info.TYPE_SENSOR_RULE;
-		case ActuatorRule:
-			return Info.TYPE_ACTUATOR_RULE;
-		case InductorRule:
-			return Info.TYPE_INDUCTOR_RULE;
-		case DeductorRule:
-			return Info.TYPE_DEDUCTOR_RULE;
-		}
-		return 0;
-	}
-
 
 }

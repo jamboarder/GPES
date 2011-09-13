@@ -1,6 +1,5 @@
 package com.uobia.gpes.actor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
@@ -8,55 +7,43 @@ import org.junit.Test;
 
 import com.uobia.gpes.event.Event;
 import com.uobia.gpes.model.Info;
+import com.uobia.gpes.model.InfoFixture;
 
 public class ActuatorTest {
 	@Test
-	public void shouldMatch() {
+	public void shouldFindMatches() {
 		Actor actor = Actor.create();
-		actor.addRule(actuatorTestRule());
-		actor.infoStore().addAll(matchableTestInfo());
-		List<Integer> matchedIndexes = Actuator.find(actor, actuatorTestRule());
-		List<Info> matchedInfo = actor.infoStore().infoForIndexes(matchedIndexes);
-		Assert.assertTrue("Info should be matched", matchedInfo.equals(matchableTestInfo()));
+		List<Info> infos = InfoFixture.createInfo();
+		actor.infoStore().addAll(infos);
+		ActorRule actuatorRule = ActorRuleFixture.createMatchingActuatorRule(infos);
+		actor.addRule(actuatorRule);
+		List<Integer> matchedIndexes = Actuator.find(actor, actuatorRule);
+		List<Integer> correctMatchedIndexes = actor.infoStore().matchIndexes(actuatorRule.getMatchRules());
+		Assert.assertTrue("Info should be matched", matchedIndexes.equals(correctMatchedIndexes));
 	}
 
 	@Test
 	public void shouldNotMatch() {
 		Actor actor = Actor.create();
-		actor.addRule(ActuatorTest.actuatorTestRule());
-		actor.infoStore().addAll(unMatchableTestInfo());
-		List<Integer> matchedIndexes = Actuator.find(actor, actuatorTestRule());
-		List<Info> matchedInfo = actor.infoStore().infoForIndexes(matchedIndexes);
-		Assert.assertFalse("Info should not be matched", matchedInfo.equals(matchableTestInfo()));
+		List<Info> infos = InfoFixture.createInfo();
+		actor.infoStore().addAll(infos);
+		ActorRule actuatorRule = ActorRuleFixture.createNoMatchActuatorRule(infos);
+		actor.addRule(actuatorRule);
+		List<Integer> matchedIndexes = Actuator.find(actor, actuatorRule);
+		List<Integer> correctMatchedIndexes = actor.infoStore().matchIndexes(actuatorRule.getMatchRules());
+		Assert.assertFalse("Info should not be matched", matchedIndexes.equals(correctMatchedIndexes));
 	}
 
 	@Test
-	public void shouldMatchAndAct() {
+	public void shouldCreateEvent() {
 		Actor actor = Actor.create();
-		actor.addRule(ActuatorTest.actuatorTestRule());
-		actor.infoStore().addAll(matchableTestInfo());
-		@SuppressWarnings("unused")
+		List<Info> infos = InfoFixture.createInfo();
+		actor.infoStore().addAll(infos);
+		ActorRule actuatorRule = ActorRuleFixture.createMatchingActuatorRule(infos);
+		actor.addRule(actuatorRule);
         List<Event> events = Actuator.createEvents(actor);
 		//TODO: Define requirements for created events and how to compare with expectation
-		Assert.assertTrue("Should match and act", false);
+		Assert.assertTrue("Should match and act", events.size() > 0);
 	}
 
-	private static ActorRule actuatorTestRule() {
-		ActorRule rule = ActorRule.create();
-		rule.setRuleType(ActorRule.RuleType.ActuatorRule);
-		// TODO create test actuator rule
-		return rule;
-	}
-	
-	private static List<Info> matchableTestInfo() {
-		// TODO Auto-generated method stub
-		List<Info> testInfo = new ArrayList<Info>();
-		return testInfo;
-	}
-
-	private static List<Info> unMatchableTestInfo() {
-		// TODO Auto-generated method stub
-		List<Info> testInfo = new ArrayList<Info>();
-		return testInfo;
-	}
 }

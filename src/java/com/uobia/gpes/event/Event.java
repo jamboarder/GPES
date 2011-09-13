@@ -1,8 +1,4 @@
 package com.uobia.gpes.event;
-import java.util.EnumSet;
-import java.util.List;
-
-import com.uobia.gpes.model.Info;
 import com.uobia.gpes.model.InfoStore;
 
 
@@ -25,14 +21,15 @@ public class Event {
 	}
 	
 	public int getCreatorId() {
-		Info dummyIdInfo = Info.create(Info.THIS, Info.CREATED_BY, 0);
-		List<Integer> idIndex = infoStore.indexesForInfo(dummyIdInfo, EnumSet.of(InfoStore.MatchElement.MatchSubject, InfoStore.MatchElement.MatchPredicate));
-		if (!idIndex.isEmpty()) {
-			Info idInfo = infoStore.get(idIndex.get(0));
-			return idInfo.getO();
-		} else {
-			return -1;
-		}
+		return 0;
+//		Info dummyIdInfo = Info.create(InfoSubject.SELF.getValue(), InfoPredicate.CREATED_BY.getValue(), 0);
+//		List<Integer> idIndex = infoStore.indexesForInfo(dummyIdInfo, EnumSet.of(InfoStore.MatchElement.MatchSubject, InfoStore.MatchElement.MatchPredicate));
+//		if (!idIndex.isEmpty()) {
+//			Info idInfo = infoStore.get(idIndex.get(0));
+//			return idInfo.getObject();
+//		} else {
+//			return -1;
+//		}
 	}
 
 	public InfoStore infoStore() {
@@ -50,9 +47,9 @@ public class Event {
 		return this.infoStore.equals(event.infoStore());
 	}
 	private void setCreatorId(int creatorId) {
-		Info idInfo = Info.create(Info.THIS, Info.CREATED_BY, creatorId);
-		List<Integer> idIndex = infoStore.indexesForInfo(idInfo, EnumSet.of(InfoStore.MatchElement.MatchSubject, InfoStore.MatchElement.MatchPredicate));
-		infoStore.removeAll(idIndex);
-		infoStore.add(idInfo);
+//		Info idInfo = Info.create(Info.THIS, Info.CREATED_BY, creatorId);
+//		List<Integer> idIndex = infoStore.indexesForInfo(idInfo, EnumSet.of(InfoStore.MatchElement.MatchSubject, InfoStore.MatchElement.MatchPredicate));
+//		infoStore.removeAll(idIndex);
+//		infoStore.add(idInfo);
 	}
 }

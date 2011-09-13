@@ -34,5 +34,5 @@ public class MatcherTest {
 		List<Info> results = Matcher.match(m, infos);
 		Assert.assertEquals("Should return nothing", 0, results.size());
 	}
-
+	
 }

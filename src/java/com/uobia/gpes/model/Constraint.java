@@ -3,7 +3,6 @@ package com.uobia.gpes.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class Constraint implements Serializable {
@@ -20,7 +19,6 @@ public class Constraint implements Serializable {
 	 * a1, IS_TYPE, TYPE_ACTION_RULE
 	 * ...
 	 */
-	public enum CompareTarget{SFrom, PFrom, OFrom};
 	
 	private final int id;
 	private List<Info> infoCollection;
@@ -28,7 +26,9 @@ public class Constraint implements Serializable {
 	private Constraint(int id) {
 		this.id = id;
 		infoCollection = new ArrayList<Info>();
-		infoCollection.add(Info.create(this.id, Info.IS_TYPE, Info.TYPE_CONSTRAINT));
+		infoCollection.add(Info.create(this.id, 
+				                       InfoPredicate.IS_TYPE.getValue(), 
+				                       InfoObject.TYPE_CONSTRAINT.getValue()));
 	}
 	
 	public static Constraint create(int id) {
@@ -40,30 +40,17 @@ public class Constraint implements Serializable {
 	}
 
 	public void addComparator(final InfoComparator comparator, final int value) {
-		infoCollection.add(Info.create(id, InfoPredicate.COMPARE_USING.getId(), comparator.getId()));
-		infoCollection.add(Info.create(id, InfoPredicate.COMPARE_WITH_FIXED.getId(), value));
+		infoCollection.add(Info.create(id, InfoPredicate.COMPARE_USING.getValue(), comparator.getValue()));
+		infoCollection.add(Info.create(id, InfoPredicate.COMPARE_WITH_FIXED.getValue(), value));
 	}
 
-	public void addComparator(final InfoComparator comparator, final CompareTarget target, final int matchId) {
-		infoCollection.add(Info.create(id,InfoPredicate.COMPARE_USING.getId(), comparator.getId()));
-		infoCollection.add(Info.create(id, infoForTarget(target), matchId));
+	public void addComparator(final InfoComparator comparator, final InfoCompareTarget target, final int matchId) {
+		infoCollection.add(Info.create(id, InfoPredicate.COMPARE_USING.getValue(), comparator.getValue()));
+		infoCollection.add(Info.create(id, target.getValue(), matchId));
 	}
 	
 	public List<Info> getInfo() {
 		return Collections.unmodifiableList(infoCollection);
-	}
-
-	private int infoForTarget(CompareTarget target) {
-		//TODO: Change this to map
-		switch (target) {
-		case SFrom:
-			return Info.COMPARE_WITH_S_FROM;
-		case PFrom:
-			return Info.COMPARE_WITH_P_FROM;
-		case OFrom:
-			return Info.COMPARE_WITH_O_FROM;
-		}
-		return 0;
 	}
 
 	@Override

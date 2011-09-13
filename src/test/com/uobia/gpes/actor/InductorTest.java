@@ -1,40 +1,44 @@
 package com.uobia.gpes.actor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.uobia.gpes.actor.ActorRule.RuleType;
 import com.uobia.gpes.model.Info;
+import com.uobia.gpes.model.InfoFixture;
 
 public class InductorTest {
 	@Test
-	public void shouldFindInfo() {
+	public void shouldFindMatches() {
 		Actor actor = Actor.create();
-		actor.addRule(inductorTestRule());
-		actor.infoStore().addAll(matchableTestInfo());
-		List<Integer> matchedIndexes = Inductor.find(actor, inductorTestRule());
-		List<Info> matchedInfo = actor.infoStore().infoForIndexes(matchedIndexes);
-		Assert.assertTrue("Info should be found", matchedInfo.equals(matchableTestInfo()));
+		List<Info> infos = InfoFixture.createInfo();
+		actor.infoStore().addAll(infos);
+		ActorRule inductorRule = ActorRuleFixture.createMatchingInductorRule(infos);
+		actor.addRule(inductorRule);
+		List<Integer> matchedIndexes = Actuator.find(actor, inductorRule);
+		List<Integer> correctMatchedIndexes = actor.infoStore().matchIndexes(inductorRule.getMatchRules());
+		Assert.assertTrue("Info should be matched", matchedIndexes.equals(correctMatchedIndexes));
 	}
 
 	@Test
-	public void shouldNotFindInfo() {
+	public void shouldNotMatch() {
 		Actor actor = Actor.create();
-		actor.addRule(inductorTestRule());
-		actor.infoStore().addAll(unMatchableTestInfo());
-		List<Integer> matchedIndexes = Inductor.find(actor, inductorTestRule());
-		List<Info> matchedInfo = actor.infoStore().infoForIndexes(matchedIndexes);
-		Assert.assertFalse("Info should not be found", matchedInfo.equals(matchableTestInfo()));
+		List<Info> infos = InfoFixture.createInfo();
+		actor.infoStore().addAll(infos);
+		ActorRule inductorRule = ActorRuleFixture.createNoMatchInductorRule(infos);
+		actor.addRule(inductorRule);
+		List<Integer> matchedIndexes = Actuator.find(actor, inductorRule);
+		List<Integer> correctMatchedIndexes = actor.infoStore().matchIndexes(inductorRule.getMatchRules());
+		Assert.assertFalse("Info should not be matched", matchedIndexes.equals(correctMatchedIndexes));
 	}
 
 	@Test
 	public void shouldAddInfo() {
 		Actor actor = Actor.create();
-		actor.addRule(inductorAddTestRule());
-		actor.infoStore().addAll(matchableTestInfo());
+		List<Info> infos = InfoFixture.createInfo();
+		actor.addRule(ActorRuleFixture.createInductorAddRule(infos));
+		actor.infoStore().addAll(infos);
 		Inductor.findAndAct(actor);
 		//TODO: Define requirements for added info and how to compare with expectation
 		Assert.assertTrue("Should find and add info", false);
@@ -43,8 +47,9 @@ public class InductorTest {
 	@Test
 	public void shouldModifyInfo() {
 		Actor actor = Actor.create();
-		actor.addRule(inductorModifyTestRule());
-		actor.infoStore().addAll(matchableTestInfo());
+		List<Info> infos = InfoFixture.createInfo();
+		actor.addRule(ActorRuleFixture.createInductorModifyRule(infos));
+		actor.infoStore().addAll(infos);
 		Inductor.findAndAct(actor);
 		//TODO: Define requirements for added info and how to compare with expectation
 		Assert.assertTrue("Should find and modify info", false);
@@ -53,49 +58,11 @@ public class InductorTest {
 	@Test
 	public void shouldRemoveInfo() {
 		Actor actor = Actor.create();
-		actor.addRule(inductorRemoveTestRule());
-		actor.infoStore().addAll(matchableTestInfo());
+		List<Info> infos = InfoFixture.createInfo();
+		actor.addRule(ActorRuleFixture.createInductorRemoveRule(infos));
+		actor.infoStore().addAll(infos);
 		Inductor.findAndAct(actor);
 		//TODO: Define requirements for added info and how to compare with expectation
 		Assert.assertTrue("Should find and remove info", false);
-	}
-
-	private static List<Info> matchableTestInfo() {
-		// TODO Auto-generated method stub
-		List<Info> testInfo = new ArrayList<Info>();
-		return testInfo;
-	}
-
-	private static List<Info> unMatchableTestInfo() {
-		// TODO Auto-generated method stub
-		List<Info> testInfo = new ArrayList<Info>();
-		return testInfo;
-	}
-
-	private static ActorRule inductorTestRule() {
-		ActorRule rule = ActorRule.create();
-		rule.setRuleType(RuleType.InductorRule);
-		// TODO create test inductor rule
-		return rule;
-	}
-	
-	private static ActorRule inductorAddTestRule() {
-		ActorRule rule = ActorRule.create();
-		rule.setRuleType(RuleType.InductorRule);
-		// TODO create test inductor add rule
-		return rule;
-	}
-
-	private static ActorRule inductorModifyTestRule() {
-		ActorRule rule = ActorRule.create();
-		rule.setRuleType(RuleType.InductorRule);
-		// TODO create test inductor add rule
-		return rule;
-	}
-	private static ActorRule inductorRemoveTestRule() {
-		ActorRule rule = ActorRule.create();
-		rule.setRuleType(RuleType.InductorRule);
-		// TODO create test inductor add rule
-		return rule;
 	}
 }

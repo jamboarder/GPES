@@ -6,86 +6,55 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.uobia.gpes.actor.ActorRule.RuleType;
 import com.uobia.gpes.event.Event;
 import com.uobia.gpes.model.Info;
+import com.uobia.gpes.model.InfoFixture;
 
 public class SensorTest {
 	@Test
 	public void shouldDetectEntireEvent() {
-		Event event = sensableTestEvent();
-		List<Info> detectedInfo = Sensor.detect(event, detectsAllSensorTestRule());
-		Assert.assertTrue("Entire event should be detected", detectedInfo.equals(event.infoStore().allInfo()));
+		List<Info> infos = InfoFixture.createInfo();
+		Event event = Event.create();
+		event.infoStore().addAll(infos);
+		List<Info> detectedInfo = Sensor.detect(event, ActorRuleFixture.detectsAllSensorTestRule(infos));
+		Assert.assertTrue("Entire event should be detected", detectedInfo.equals(event.infoStore().getInfo()));
 	}
 	
 	@Test
 	public void shouldDetectSomeOfEvent() {
-		Event event = sensableTestEvent();
-		//TODO: Define what the partially detected info should look like
-		List<Info> targetInfo = new ArrayList<Info>();
-		List<Info> detectedInfo = Sensor.detect(event, detectsSomeSensorTestRule());
-		Assert.assertTrue("Some of event should be detected", detectedInfo.equals(targetInfo));
+		List<Info> infos = InfoFixture.createInfo();
+		Event event = Event.create();
+		event.infoStore().addAll(infos);
+		Info targetInfo = infos.get(0);
+		List<Integer> subjectMatches = new ArrayList<Integer>();
+		subjectMatches.add(targetInfo.getSubject());
+		List<Info> detectedInfo = Sensor.detect(event, ActorRuleFixture.detectsSubjectsSensorRule(subjectMatches));
+		Assert.assertTrue("Some of event should be detected", detectedInfo.contains(targetInfo));
 	}
 	
 	@Test
 	public void shouldNotDetectEvent() {
-		List<Info> detectedInfo = Sensor.detect(sensableTestEvent(), 
-				SensorTest.detectsNothingSensorTestRule());
-		Assert.assertTrue("Some of event should be detected", detectedInfo.isEmpty());
+		List<Info> infos = InfoFixture.createInfo();
+		Event event = Event.create();
+		event.infoStore().addAll(infos);
+		List<Info> detectedInfo = Sensor.detect(event, 
+				ActorRuleFixture.detectsNothingSensorTestRule(infos));
+		Assert.assertTrue("None of event should be detected", detectedInfo.isEmpty());
 	}
 	
+	@SuppressWarnings("unused")
 	@Test
 	public void shouldDetectAndRecordEvent() {
+		List<Info> infos = InfoFixture.createInfo();
+		ActorRule sensorRule = ActorRuleFixture.detectsAllSensorTestRule(infos);
 		Actor actor = Actor.create();
-		actor.addRule(detectsAllSensorTestRule());
-		Event event = sensableTestEvent();
-		@SuppressWarnings("unused")
-		List<Info> detectedInfo = Sensor.detect(event, detectsAllSensorTestRule());
+		actor.addRule(sensorRule);
+		Event event = Event.create();
+		event.infoStore().addAll(infos);
+		List<Info> detectedInfo = Sensor.detect(event, ActorRuleFixture.detectsAllSensorTestRule(infos));
 		Sensor.detectAndRecord(event, actor);
 		//TODO: Define requirements for recorded info and how to compare with detected info
 		Assert.assertTrue("Should detect and record event", false);
 	}
 	
-	@Test
-	public void shouldDetectAndRecordAllEvents() {
-		Actor actor = Actor.create();
-		actor.addRule(detectsAllSensorTestRule());
-		List<Event> events = sensableTestEvents();
-		Sensor.detectAllAndRecord(events, actor);
-		//TODO: Define requirements for recorded info and how to compare with detected info
-		Assert.assertTrue("Should detect and record event", false);
-	}
-	
-	public static final Event sensableTestEvent() {
-		Event event = Event.create();
-		//TODO: Add event data
-		return event;
-	}
-	
-	private static List<Event> sensableTestEvents() {
-		List<Event> events = new ArrayList<Event>();
-		events.add(sensableTestEvent());
-		// TODO Add more event data
-		return events;
-	}
-
-	public static final ActorRule detectsAllSensorTestRule() {
-		ActorRule rule = ActorRule.create();
-		rule.setRuleType(RuleType.SensorRule);
-		//TODO: Add Sensor match and action rules
-		return rule;
-	}
-
-	public static final ActorRule detectsSomeSensorTestRule() {
-		ActorRule rule = ActorRule.create();
-		rule.setRuleType(RuleType.SensorRule);
-		//TODO: Add Sensor match and action rules
-		return rule;
-	}
-	public static final ActorRule detectsNothingSensorTestRule() {
-		ActorRule rule = ActorRule.create();
-		rule.setRuleType(RuleType.SensorRule);
-		//TODO: Add Sensor match and action rules
-		return rule;
-	}
 }

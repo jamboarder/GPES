@@ -6,7 +6,7 @@ import java.util.List;
 
 public class MatchRule implements Serializable {
  	private static final long serialVersionUID = 1L;
-	/**
+	/*
 	 * Example sensor rule
 	 * s1, IS_TYPE, TYPE_SENSOR_RULE
 	 * s1, HAS_PART, m1
@@ -19,7 +19,6 @@ public class MatchRule implements Serializable {
 	 * ...
 	 */
 	
-	public enum MatchTarget{MatchS, MatchP, MatchO};
 	private final int id;
 	private List<Info> infoCollection;
 	private List<Constraint> constraints;
@@ -27,13 +26,36 @@ public class MatchRule implements Serializable {
 	private MatchRule(int id) {
 		this.id = id;
 		infoCollection = new ArrayList<Info>();
-		infoCollection.add(Info.create(this.id, Info.IS_TYPE, Info.TYPE_CONSTRAINT));
+		infoCollection.add(Info.create(this.id, 
+				                       InfoPredicate.IS_TYPE.getValue(), 
+				                       InfoObject.TYPE_CONSTRAINT.getValue()));
 	}
 	
 	public static MatchRule create(int id) {
 		return new MatchRule(id);
 	}
 	
+	public int getId() {
+		return id;
+	}
+	
+	public List<Info> getInfo() {
+		List<Info> allInfo = new ArrayList<Info>();
+		allInfo.addAll(infoCollection);
+		for (int i = 0; i < constraints.size(); i++) {
+			allInfo.addAll(constraints.get(i).getInfo());
+		}
+		return allInfo;
+	}
+	
+	public List<Constraint> getConstraints() {
+		return constraints;
+	}
+	
+	public void addConstraint(final InfoMatchTarget target, Constraint constraint) {
+		infoCollection.add(Info.create(id, target.getValue(), constraint.getId()));
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -69,38 +91,4 @@ public class MatchRule implements Serializable {
 			return false;
 		return true;
 	}
-
-	public int getId() {
-		return id;
-	}
-	
-	public List<Info> getInfo() {
-		List<Info> allInfo = new ArrayList<Info>();
-		allInfo.addAll(infoCollection);
-		for (int i = 0; i < constraints.size(); i++) {
-			allInfo.addAll(constraints.get(i).getInfo());
-		}
-		return allInfo;
-	}
-	
-	public List<Constraint> getConstraints() {
-		return constraints;
-	}
-	
-	public void addConstraint(MatchTarget target, Constraint constraint) {
-		infoCollection.add(Info.create(id, infoForTarget(target), constraint.getId()));
-	}
-
-	private int infoForTarget(MatchTarget target) {
-		switch (target) {
-		case MatchS:
-			return Info.MATCH_S;
-		case MatchP:
-			return Info.MATCH_P;
-		case MatchO:
-			return Info.MATCH_O;
-		}
-		return 0;
-	}
-
 }

@@ -2,11 +2,11 @@ package com.uobia.gpes.model;
 
 public enum InfoSubject {
 	SELF(0);
-	private final int id;
-	private InfoSubject(final int id) {
-		this.id = id;
+	private final int value;
+	private InfoSubject(final int value) {
+		this.value = value;
 	}
-	public int getId() {
-		return id;
+	public int getValue() {
+		return value;
 	}
 }

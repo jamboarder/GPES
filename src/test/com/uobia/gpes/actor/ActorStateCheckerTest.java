@@ -23,7 +23,7 @@ public class ActorStateCheckerTest {
 		Actor actor = Actor.create();
 		Assert.assertFalse("Empty actor has no actuator rules", ActorStateChecker.hasActuatorRule(actor));
 		
-		actor.addRule(ActorRuleTest.createValidRule(ActorRule.RuleType.ActuatorRule));
+		actor.addRule(ActorRuleFixture.createValidRule(ActorRuleType.TYPE_ACTUATOR_RULE));
 		Assert.assertTrue("Should have actuator rules", ActorStateChecker.hasActuatorRule(actor));
 	}
 	
@@ -32,7 +32,7 @@ public class ActorStateCheckerTest {
 		Actor actor = Actor.create();
 		Assert.assertFalse("Empty actor has no sensor rules", ActorStateChecker.hasSensorRule(actor));
 		
-		actor.addRule(ActorRuleTest.createValidRule(ActorRule.RuleType.SensorRule));
+		actor.addRule(ActorRuleFixture.createValidRule(ActorRuleType.TYPE_SENSOR_RULE));
 		Assert.assertTrue("Should have actuator rules", ActorStateChecker.hasSensorRule(actor));
 	}
 	
@@ -41,7 +41,7 @@ public class ActorStateCheckerTest {
 		Actor actor = Actor.create();
 		Assert.assertFalse("Empty actor has no actuator rules", ActorStateChecker.hasInductorRule(actor));
 		
-		actor.addRule(ActorRuleTest.createValidRule(ActorRule.RuleType.InductorRule));
+		actor.addRule(ActorRuleFixture.createValidRule(ActorRuleType.TYPE_INDUCTOR_RULE));
 		Assert.assertTrue("Should have actuator rules", ActorStateChecker.hasInductorRule(actor));
 	}
 	
@@ -50,7 +50,7 @@ public class ActorStateCheckerTest {
 		Actor actor = Actor.create();
 		Assert.assertFalse("Empty actor has no actuator rules", ActorStateChecker.hasDeductorRule(actor));
 		
-		actor.addRule(ActorRuleTest.createValidRule(ActorRule.RuleType.DeductorRule));
+		actor.addRule(ActorRuleFixture.createValidRule(ActorRuleType.TYPE_DEDUCTOR_RULE));
 		Assert.assertTrue("Should have actuator rules", ActorStateChecker.hasDeductorRule(actor));
 	}
 }

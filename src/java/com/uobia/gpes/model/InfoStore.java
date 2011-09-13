@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.uobia.gpes.matcher.Matcher;
+
 
 public class InfoStore implements Serializable {
  	private static final long serialVersionUID = 1L;
@@ -35,9 +37,9 @@ public class InfoStore implements Serializable {
 	public void addAll(List<Info> infos) {
 		infoCollection.addAll(infos);
 		for (int i = 0; i < infos.size(); i++) {
-			sCache.add(infos.get(i).getS());
-			pCache.add(infos.get(i).getP());
-			oCache.add(infos.get(i).getO());
+			sCache.add(infos.get(i).getSubject());
+			pCache.add(infos.get(i).getPredicate());
+			oCache.add(infos.get(i).getObject());
 		}
 	}
 	
@@ -58,9 +60,9 @@ public class InfoStore implements Serializable {
 	public boolean add(Info info) {
 		if (infoCollection.size() < maxSize) {
 			infoCollection.add(info);
-			sCache.add(info.getS());
-			pCache.add(info.getP());
-			oCache.add(info.getO());
+			sCache.add(info.getSubject());
+			pCache.add(info.getPredicate());
+			oCache.add(info.getObject());
 			return true;
 		} else {
 			return false;
@@ -93,20 +95,22 @@ public class InfoStore implements Serializable {
 	}
 
 	public boolean equals(InfoStore infoStore) {
-		System.out.print(infoCollection.get(0).getS() + "," + infoCollection.get(0).getP() + "," +infoCollection.get(0).getO());
-		System.out.print(infoStore.allInfo().get(0).getS() + "," + infoStore.allInfo().get(0).getP() + "," + infoStore.allInfo().get(0).getO());
-		return (this.infoCollection.equals(infoStore.allInfo()));
+		return (this.infoCollection.equals(infoStore.getInfo()));
+	}
+	
+	public List<Info> getInfo() {
+		return Collections.unmodifiableList(infoCollection);
 	}
 	
 	public List<Info> matchInfo(MatchRule matchRule) {
-		List<Info> matches = new ArrayList<Info>();
+		List<Info> matches = Matcher.match(matchRule, infoCollection);
 		//TODO: Finish implementation
 		return matches;
 	}
 	
 	public List<Integer> matchIndexes(List<MatchRule> matchRule) {
 		// TODO: Finish implementation
-		return null;
+		return new ArrayList<Integer>();
 	}
 	
 	public List<Info> infoForIndexes(List<Integer> indexes) {
@@ -243,9 +247,4 @@ public class InfoStore implements Serializable {
 		return subList;
 	}*/
 
-	public List<Info> getInfo() {
-		return Collections.unmodifiableList(infoCollection);
-		// TODO Auto-generated method stub
-		
-	}
 }

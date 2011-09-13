@@ -1,9 +1,5 @@
 package com.uobia.gpes.model;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -94,7 +90,25 @@ public class InfoStoreTest {
 		infoStore.clear();
 		Assert.assertTrue("Should be empty on clear", infoStore.isEmpty());
 	}
-	
+
+	/*@Test 
+	public void shouldMatch() {
+		MatchRule matchRule = testMatchRule();
+		InfoStore infoStore = InfoStore.create();
+		infoStore.addAll(testMatchableInfo());
+		List<Info> matchedInfo = infoStore.matchInfo(matchRule);
+		Assert.assertTrue("Info should match based on match rule", matchedInfo.equals(testMatchableInfo()));
+	}
+
+	@Test 
+	public void shouldNotMatch() {
+		MatchRule matchRule = testMatchRule();
+		InfoStore infoStore = InfoStore.create();
+		infoStore.addAll(testUnMatchableInfo());
+		List<Info> matchedInfo = infoStore.matchInfo(matchRule);
+		Assert.assertFalse("Info should not match based on match rule", matchedInfo.equals(testMatchableInfo()));
+	}
+
 	@Test
 	public void shouldReturnIndexesForInfo() {
 		InfoStore infoStore = InfoStore.create();
@@ -199,41 +213,6 @@ public class InfoStoreTest {
 				EnumSet.of(InfoStore.MatchElement.MatchSubject, InfoStore.MatchElement.MatchPredicate, InfoStore.MatchElement.MatchObject));
 		Assert.assertTrue("Should not find indexes for matching subject, predicate & object", 
 				indexes.isEmpty());
-	}
+	}*/
 	
-	@Test 
-	public void shouldMatch() {
-		MatchRule matchRule = testMatchRule();
-		InfoStore infoStore = InfoStore.create();
-		infoStore.addAll(testMatchableInfo());
-		List<Info> matchedInfo = infoStore.matchInfo(matchRule);
-		Assert.assertTrue("Info should match based on match rule", matchedInfo.equals(testMatchableInfo()));
-	}
-
-	@Test 
-	public void shouldNotMatch() {
-		MatchRule matchRule = testMatchRule();
-		InfoStore infoStore = InfoStore.create();
-		infoStore.addAll(testUnMatchableInfo());
-		List<Info> matchedInfo = infoStore.matchInfo(matchRule);
-		Assert.assertFalse("Info should not match based on match rule", matchedInfo.equals(testMatchableInfo()));
-	}
-
-	private List<Info> testMatchableInfo() {
-		List<Info> testData = new ArrayList<Info>();
-		//TODO create test data
-		return testData;
-	}
-
-	private List<Info> testUnMatchableInfo() {
-		List<Info> testData = new ArrayList<Info>();
-		//TODO create test data
-		return testData;
-	}
-
-	private MatchRule testMatchRule() {
-		//TODO: Define requirements for rule validation
-		MatchRule matchRule = MatchRule.create(0);
-		return matchRule;
-	}
 }
