@@ -1,5 +1,12 @@
 package com.uobia.gpes.event;
+import java.util.EnumSet;
+import java.util.List;
+
+import com.uobia.gpes.matcher.Matcher;
+import com.uobia.gpes.model.Info;
+import com.uobia.gpes.model.InfoPredicate;
 import com.uobia.gpes.model.InfoStore;
+import com.uobia.gpes.model.InfoSubject;
 
 
 public class Event {
@@ -21,35 +28,52 @@ public class Event {
 	}
 	
 	public int getCreatorId() {
-		return 0;
-//		Info dummyIdInfo = Info.create(InfoSubject.SELF.getValue(), InfoPredicate.CREATED_BY.getValue(), 0);
-//		List<Integer> idIndex = infoStore.indexesForInfo(dummyIdInfo, EnumSet.of(InfoStore.MatchElement.MatchSubject, InfoStore.MatchElement.MatchPredicate));
-//		if (!idIndex.isEmpty()) {
-//			Info idInfo = infoStore.get(idIndex.get(0));
-//			return idInfo.getObject();
-//		} else {
-//			return -1;
-//		}
+		Info searchIdInfo = Info.create(InfoSubject.SELF.getValue(), InfoPredicate.CREATED_BY.getValue(), 0);
+		EnumSet<Matcher.MatchElement> matchOn = EnumSet.of(Matcher.MatchElement.MatchSubject, Matcher.MatchElement.MatchPredicate);
+		List<Integer> idIndex = Matcher.indexesForInfo(searchIdInfo, matchOn, infoStore);
+		if (!idIndex.isEmpty()) {
+			Info idInfo = infoStore.get(idIndex.get(0));
+			return idInfo.getObject();
+		} else {
+			return 0;
+		}
+	}
+
+	private void setCreatorId(int creatorId) {
+		Info idInfo = Info.create(InfoSubject.SELF.getValue(), InfoPredicate.CREATED_BY.getValue(), creatorId);
+		EnumSet<Matcher.MatchElement> matchOn = EnumSet.of(Matcher.MatchElement.MatchSubject, Matcher.MatchElement.MatchPredicate);
+		List<Integer> idIndex = Matcher.indexesForInfo(idInfo, matchOn, infoStore);
+		infoStore.removeAll(idIndex);
+		infoStore.add(idInfo);
 	}
 
 	public InfoStore infoStore() {
 		return infoStore;
 	}
-	
-	public void setInfoStore(InfoStore infoStore) {
-		this.infoStore = infoStore;
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((infoStore == null) ? 0 : infoStore.hashCode());
+		return result;
 	}
-	
-	public boolean equals(Object object) {
-    	if ( this == object ) return true;
-    	if ( !(object instanceof Event) ) return false;
-    	Event event = (Event)object;
-		return this.infoStore.equals(event.infoStore());
-	}
-	private void setCreatorId(int creatorId) {
-//		Info idInfo = Info.create(Info.THIS, Info.CREATED_BY, creatorId);
-//		List<Integer> idIndex = infoStore.indexesForInfo(idInfo, EnumSet.of(InfoStore.MatchElement.MatchSubject, InfoStore.MatchElement.MatchPredicate));
-//		infoStore.removeAll(idIndex);
-//		infoStore.add(idInfo);
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Event other = (Event) obj;
+		if (infoStore == null) {
+			if (other.infoStore != null)
+				return false;
+		} else if (!infoStore.equals(other.infoStore))
+			return false;
+		return true;
 	}
 }

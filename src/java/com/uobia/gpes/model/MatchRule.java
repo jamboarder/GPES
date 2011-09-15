@@ -2,7 +2,10 @@ package com.uobia.gpes.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
+
+import com.uobia.gpes.matcher.Matcher;
 
 public class MatchRule implements Serializable {
  	private static final long serialVersionUID = 1L;
@@ -29,6 +32,7 @@ public class MatchRule implements Serializable {
 		infoCollection.add(Info.create(this.id, 
 				                       InfoPredicate.IS_TYPE.getValue(), 
 				                       InfoObject.TYPE_CONSTRAINT.getValue()));
+		constraints = new ArrayList<Constraint>();
 	}
 	
 	public static MatchRule create(int id) {
@@ -54,6 +58,64 @@ public class MatchRule implements Serializable {
 	
 	public void addConstraint(final InfoMatchTarget target, Constraint constraint) {
 		infoCollection.add(Info.create(id, target.getValue(), constraint.getId()));
+		constraints.add(constraint);
+	}
+
+	public List<Constraint> getSubjectConstraints() {
+		InfoStore infoStore = InfoStore.create();
+		infoStore.addAll(infoCollection);
+		Info searchInfo = Info.create(getId(), InfoMatchTarget.MATCH_S.getValue(), 0);
+		EnumSet<Matcher.MatchElement> matchOn = EnumSet.of(Matcher.MatchElement.MatchSubject, 
+				                                     Matcher.MatchElement.MatchPredicate);
+		List<Integer> subjectInfo = Matcher.indexesForInfo(searchInfo, matchOn, infoStore);
+		List<Constraint> subjectConstraints = new ArrayList<Constraint>();
+		for (int index: subjectInfo) {
+			int subjectConstraintId = infoStore.get(index).getObject();
+			for (Constraint constraint: constraints) {
+				if (constraint.getId() == subjectConstraintId) {
+					subjectConstraints.add(constraint);
+				}
+			}
+		}
+		return subjectConstraints;
+	}
+
+	public List<Constraint> getPredicateConstraints() {
+		InfoStore infoStore = InfoStore.create();
+		infoStore.addAll(infoCollection);
+		Info searchInfo = Info.create(getId(), InfoMatchTarget.MATCH_P.getValue(), 0);
+		EnumSet<Matcher.MatchElement> matchOn = EnumSet.of(Matcher.MatchElement.MatchSubject, 
+				                                     Matcher.MatchElement.MatchPredicate);
+		List<Integer> predicateInfo = Matcher.indexesForInfo(searchInfo, matchOn, infoStore);
+		List<Constraint> predicateConstraints = new ArrayList<Constraint>();
+		for (int index: predicateInfo) {
+			int predicateConstraintId = infoStore.get(index).getObject();
+			for (Constraint constraint: constraints) {
+				if (constraint.getId() == predicateConstraintId) {
+					predicateConstraints.add(constraint);
+				}
+			}
+		}
+		return predicateConstraints;
+	}
+	
+	public List<Constraint> getObjectConstraints() {
+		InfoStore infoStore = InfoStore.create();
+		infoStore.addAll(infoCollection);
+		Info searchInfo = Info.create(getId(), InfoMatchTarget.MATCH_O.getValue(), 0);
+		EnumSet<Matcher.MatchElement> matchOn = EnumSet.of(Matcher.MatchElement.MatchSubject, 
+				                                     Matcher.MatchElement.MatchPredicate);
+		List<Integer> objectInfo = Matcher.indexesForInfo(searchInfo, matchOn, infoStore);
+		List<Constraint> objectConstraints = new ArrayList<Constraint>();
+		for (int index: objectInfo) {
+			int objectConstraintId = infoStore.get(index).getObject();
+			for (Constraint constraint: constraints) {
+				if (constraint.getId() == objectConstraintId) {
+					objectConstraints.add(constraint);
+				}
+			}
+		}
+		return objectConstraints;
 	}
 
 	@Override

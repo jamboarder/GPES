@@ -11,9 +11,9 @@ public enum InfoObject {
     TYPE_MATCH_RULE(7),
     TYPE_ACTION_RULE(8),
     TYPE_CONSTRAINT(9),
-    COMPARATOR_GREATER_THAN(100),
-    COMPARATOR_LESS_THAN(101),
-    COMPARATOR_EQUALS(101);
+    COMPARATOR_EQUALS(100),
+    COMPARATOR_GREATER_THAN(101),
+    COMPARATOR_LESS_THAN(102);
  
 	private final int value;
 	private InfoObject(final int value) {

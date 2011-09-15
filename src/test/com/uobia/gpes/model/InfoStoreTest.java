@@ -91,128 +91,12 @@ public class InfoStoreTest {
 		Assert.assertTrue("Should be empty on clear", infoStore.isEmpty());
 	}
 
-	/*@Test 
+	@Test 
 	public void shouldMatch() {
-		MatchRule matchRule = testMatchRule();
-		InfoStore infoStore = InfoStore.create();
-		infoStore.addAll(testMatchableInfo());
-		List<Info> matchedInfo = infoStore.matchInfo(matchRule);
-		Assert.assertTrue("Info should match based on match rule", matchedInfo.equals(testMatchableInfo()));
 	}
 
 	@Test 
 	public void shouldNotMatch() {
-		MatchRule matchRule = testMatchRule();
-		InfoStore infoStore = InfoStore.create();
-		infoStore.addAll(testUnMatchableInfo());
-		List<Info> matchedInfo = infoStore.matchInfo(matchRule);
-		Assert.assertFalse("Info should not match based on match rule", matchedInfo.equals(testMatchableInfo()));
 	}
-
-	@Test
-	public void shouldReturnIndexesForInfo() {
-		InfoStore infoStore = InfoStore.create();
-		infoStore.add(Info.create(1, 2, 3));
-		infoStore.add(Info.create(1, 2, 4));
-		infoStore.add(Info.create(1, 4, 5));
-		infoStore.add(Info.create(3, 4, 5));
-		infoStore.add(Info.create(6, 2, 5));
-		
-		Info testInfo = Info.create(1, 10, 11);
-		List<Integer> result = new ArrayList<Integer>();
-		result.add(0);
-		result.add(1);
-		result.add(2);
-		List<Integer> indexes = infoStore.indexesForInfo(testInfo, 
-				EnumSet.of(InfoStore.MatchElement.MatchSubject));
-		Assert.assertTrue("Should find correct indexes for matching subject", indexes.equals(result));
-
-		testInfo = Info.create(1, 2, 10);
-		result.clear();
-		result.add(0);
-		result.add(1);
-		result.add(4);
-		indexes = infoStore.indexesForInfo(testInfo, 
-				EnumSet.of(InfoStore.MatchElement.MatchPredicate));
-		Assert.assertTrue("Should find correct indexes for matching predicate", indexes.equals(result));
-
-		testInfo = Info.create(10, 2, 5);
-		result.clear();
-		result.add(2);
-		result.add(3);
-		result.add(4);
-		indexes = infoStore.indexesForInfo(testInfo, 
-				EnumSet.of(InfoStore.MatchElement.MatchObject));
-		Assert.assertTrue("Should find correct indexes for matching object", indexes.equals(result));
-
-		testInfo = Info.create(1, 2, 10);
-		result.clear();
-		result.add(0);
-		result.add(1);
-		indexes = infoStore.indexesForInfo(testInfo, 
-				EnumSet.of(InfoStore.MatchElement.MatchSubject, InfoStore.MatchElement.MatchPredicate));
-		Assert.assertTrue("Should find correct indexes for matching subject & predicate", 
-				indexes.equals(result));
-
-		testInfo = Info.create(10, 4, 5);
-		result.clear();
-		result.add(2);
-		result.add(3);
-		indexes = infoStore.indexesForInfo(testInfo, 
-				EnumSet.of(InfoStore.MatchElement.MatchPredicate, InfoStore.MatchElement.MatchObject));
-		Assert.assertTrue("Should find correct indexes for matching predicate & object", 
-				indexes.equals(result));
-		
-		testInfo = Info.create(3, 4, 5);
-		result.clear();
-		result.add(3);
-		indexes = infoStore.indexesForInfo(testInfo, 
-				EnumSet.of(InfoStore.MatchElement.MatchSubject, InfoStore.MatchElement.MatchPredicate, InfoStore.MatchElement.MatchObject));
-		Assert.assertTrue("Should find correct indexes for matching subject, predicate & object", 
-				indexes.equals(result));
-	}
-	
-	@Test
-	public void shouldNotReturnIndexesForInfo() {
-		InfoStore infoStore = InfoStore.create();
-		infoStore.add(Info.create(1, 2, 3));
-		infoStore.add(Info.create(1, 2, 4));
-		infoStore.add(Info.create(1, 4, 5));
-		infoStore.add(Info.create(3, 4, 5));
-		infoStore.add(Info.create(6, 2, 5));
-		
-		Info testInfo = Info.create(10, 2, 3);
-		List<Integer> indexes = infoStore.indexesForInfo(testInfo, 
-				EnumSet.of(InfoStore.MatchElement.MatchSubject));
-		Assert.assertTrue("Should not find indexes for matching subject", indexes.isEmpty());
-
-		testInfo = Info.create(1, 10, 5);
-		indexes = infoStore.indexesForInfo(testInfo, 
-				EnumSet.of(InfoStore.MatchElement.MatchPredicate));
-		Assert.assertTrue("Should not find indexes for matching predicate", indexes.isEmpty());
-
-		testInfo = Info.create(1, 2, 10);
-		indexes = infoStore.indexesForInfo(testInfo, 
-				EnumSet.of(InfoStore.MatchElement.MatchObject));
-		Assert.assertTrue("Should not find indexes for matching object", indexes.isEmpty());
-
-		testInfo = Info.create(10, 11, 3);
-		indexes = infoStore.indexesForInfo(testInfo, 
-				EnumSet.of(InfoStore.MatchElement.MatchSubject, InfoStore.MatchElement.MatchPredicate));
-		Assert.assertTrue("Should not find indexes for matching subject & predicate", 
-				indexes.isEmpty());
-
-		testInfo = Info.create(1, 10, 11);
-		indexes = infoStore.indexesForInfo(testInfo, 
-				EnumSet.of(InfoStore.MatchElement.MatchPredicate, InfoStore.MatchElement.MatchObject));
-		Assert.assertTrue("Should not find indexes for matching predicate & object", 
-				indexes.isEmpty());
-		
-		testInfo = Info.create(10, 11, 12);
-		indexes = infoStore.indexesForInfo(testInfo, 
-				EnumSet.of(InfoStore.MatchElement.MatchSubject, InfoStore.MatchElement.MatchPredicate, InfoStore.MatchElement.MatchObject));
-		Assert.assertTrue("Should not find indexes for matching subject, predicate & object", 
-				indexes.isEmpty());
-	}*/
 	
 }

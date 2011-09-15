@@ -4,30 +4,34 @@ import java.io.Serializable;
 
 public class Info implements Serializable {
  	private static final long serialVersionUID = 1L;
-	private final int s;
-    private final int p;
-    private final int o;
+	private final int subject;
+    private final int predicate;
+    private final int object;
     
-    private Info(int i, int j, int k) {
-        s = i;
-        p = j;
-        o = k;
+    private Info(int subject, int predicate, int object) {
+        this.subject = subject;
+        this.predicate = predicate;
+        this.object = object;
     }
     
-    public int getSubject() {
-    	return s;
+    public static Info create(int subject, int predicate, int object) {
+        Info info = new Info(subject, predicate, object);
+        return info;
+    }
+   public int getSubject() {
+    	return subject;
     }
     
     public int getPredicate() {
-    	return p;
+    	return predicate;
     }
     
     public int getObject() {
-    	return o;
+    	return object;
     }
     
     public boolean isRelated(Info info) {
-        if (s == info.getObject() || o == info.getSubject()) {
+        if (subject == info.getObject() || object == info.getSubject()) {
             return true;
         } else {
             return false;
@@ -38,9 +42,9 @@ public class Info implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + o;
-		result = prime * result + p;
-		result = prime * result + s;
+		result = prime * result + object;
+		result = prime * result + predicate;
+		result = prime * result + subject;
 		return result;
 	}
 
@@ -53,17 +57,12 @@ public class Info implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Info other = (Info) obj;
-		if (o != other.o)
+		if (object != other.object)
 			return false;
-		if (p != other.p)
+		if (predicate != other.predicate)
 			return false;
-		if (s != other.s)
+		if (subject != other.subject)
 			return false;
 		return true;
 	}
-
-    public static Info create(int i, int j, int k) {
-        Info info = new Info(i, j, k);
-        return info;
-    }
 }

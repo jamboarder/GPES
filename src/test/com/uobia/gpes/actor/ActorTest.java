@@ -19,12 +19,6 @@ public class ActorTest {
 	}
 	
 	@Test
-	public void shouldHaveEmptyInfoStoreOnCreate() {
-		Actor actor = Actor.create();
-		Assert.assertTrue("Newly created event infostore should be empty", actor.infoStore().isEmpty());
-	}
-	
-	@Test
 	public void shouldReturnId() {
 		int id = 453453;
 		Actor actor = Actor.create(id);

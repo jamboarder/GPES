@@ -1,9 +1,14 @@
 package com.uobia.gpes.actor;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
+import com.uobia.gpes.matcher.Matcher;
+import com.uobia.gpes.model.Info;
+import com.uobia.gpes.model.InfoPredicate;
 import com.uobia.gpes.model.InfoStore;
+import com.uobia.gpes.model.InfoSubject;
 
 
 public class Actor {
@@ -26,15 +31,15 @@ public class Actor {
 	}
 	
 	public int getId() {
-		return 0;
-//		Info dummyIdInfo = Info.create(InfoSubject.SELF.getValue(), InfoPredicate.HAS_ID.getValue(), 0);
-//		List<Integer> idIndex = infoStore.indexesForInfo(dummyIdInfo, EnumSet.of(InfoStore.MatchElement.MatchSubject, InfoStore.MatchElement.MatchPredicate));
-//		if (!idIndex.isEmpty()) {
-//			Info idInfo = infoStore.get(idIndex.get(0));
-//			return idInfo.getObject();
-//		} else {
-//			return -1;
-//		}
+		Info searchIdInfo = Info.create(InfoSubject.SELF.getValue(), InfoPredicate.HAS_ID.getValue(), 0);
+		EnumSet<Matcher.MatchElement> matchOn = EnumSet.of(Matcher.MatchElement.MatchSubject, Matcher.MatchElement.MatchPredicate);
+		List<Integer> idIndex = Matcher.indexesForInfo(searchIdInfo, matchOn, infoStore);
+		if (!idIndex.isEmpty()) {
+			Info idInfo = infoStore.get(idIndex.get(0));
+			return idInfo.getObject();
+		} else {
+			return 0;
+		}
 	}
 
 	public boolean equals(Object object) {
@@ -88,9 +93,10 @@ public class Actor {
 	}
 	
 	private void setId(int id) {
-//		Info idInfo = Info.create(Info.THIS, Info.HAS_ID, id);
-//		List<Integer> idIndex = infoStore.indexesForInfo(idInfo, EnumSet.of(InfoStore.MatchElement.MatchSubject, InfoStore.MatchElement.MatchPredicate));
-//		infoStore.removeAll(idIndex);
-//		infoStore.add(idInfo);
+		Info idInfo = Info.create(InfoSubject.SELF.getValue(), InfoPredicate.HAS_ID.getValue(), id);
+		EnumSet<Matcher.MatchElement> matchOn = EnumSet.of(Matcher.MatchElement.MatchSubject, Matcher.MatchElement.MatchPredicate);
+		List<Integer> idIndex = Matcher.indexesForInfo(idInfo, matchOn, infoStore);
+		infoStore.removeAll(idIndex);
+		infoStore.add(idInfo);
 	}
 }

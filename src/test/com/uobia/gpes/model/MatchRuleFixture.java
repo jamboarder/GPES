@@ -11,7 +11,7 @@ public class MatchRuleFixture {
 			maxS = (maxS < info.getSubject()) ? info.getSubject() : maxS;
 		}
 		MatchRule m = MatchRule.create(0);
-		Constraint constraint = Constraint.create(m.getId()+1);
+		Constraint constraint = Constraint.create(m.getId() + 1);
 		constraint.addComparator(InfoComparator.COMPARATOR_GREATER_THAN, maxS);
 		m.addConstraint(InfoMatchTarget.MATCH_S, constraint);
 		return m;

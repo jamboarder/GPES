@@ -52,6 +52,33 @@ public class Constraint implements Serializable {
 	public List<Info> getInfo() {
 		return Collections.unmodifiableList(infoCollection);
 	}
+	
+	public InfoComparator getComparator() {
+		for (Info info: infoCollection) {
+			if (info.getPredicate() == InfoPredicate.COMPARE_USING.getValue()) {
+				return InfoComparator.get(info.getObject());
+			}
+		}
+		return InfoComparator.COMPARATOR_EQUALS;
+	}
+
+	public boolean isFixed() {
+		for (Info info: infoCollection) {
+			if (info.getPredicate() == InfoPredicate.COMPARE_WITH_FIXED.getValue()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public int getFixedValue() {
+		for (Info info: infoCollection) {
+			if (info.getPredicate() == InfoPredicate.COMPARE_WITH_FIXED.getValue()) {
+				return info.getObject();
+			}
+		}
+		return 0;
+	}
 
 	@Override
 	public int hashCode() {
@@ -81,6 +108,4 @@ public class Constraint implements Serializable {
 			return false;
 		return true;
 	}
-	
-	
 }
