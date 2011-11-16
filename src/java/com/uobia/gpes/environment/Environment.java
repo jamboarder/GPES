@@ -4,13 +4,15 @@ import java.util.List;
 
 import com.uobia.gpes.actor.*;
 import com.uobia.gpes.event.*;
+import com.uobia.gpes.eventspace.EventSpace;
 
 
 public class Environment {
 	public List<Actor> actors = new ArrayList<Actor>();
-	public List<Event> events = new ArrayList<Event>();
 	public int maxSize;
 	public int stepCount = 0;
+	private EventSpace eventSpace;
+	private ResourceManager resourceManager;
 	private List<Actor> partialCandidates = new ArrayList<Actor>();
 	private List<Event> partialReproductionEvents = new ArrayList<Event>();
 	
@@ -18,6 +20,8 @@ public class Environment {
 		for (int i = 0; i < 50; i++) {
 			actors.add(Actor.create());
 		}
+		this.setResourceManager(ResourceManager.create());
+		this.setEventSpace(EventSpace.create());
 	}
 
     public static Environment create() {
@@ -26,7 +30,6 @@ public class Environment {
 
 	public void clear() {
 		actors.clear();
-		events.clear();
 	}
 	
 	public boolean isDead() {
@@ -47,19 +50,21 @@ public class Environment {
         return actors;
     }
 
-    public void addEvents(List<Event> events) {
-        // TODO Check against max allowable environment size before adding
-        this.events.addAll(events);
-        
-    }
+	public EventSpace getEventSpace() {
+		return eventSpace;
+	}
 
-    public List<Event> getEvents() {
-        return events;
-    }
-    
-	public List<Event> step(int stepCost) {
+	public void setEventSpace(EventSpace eventSpace) {
+		this.eventSpace = eventSpace;
+		resourceManager.setEventSpace(eventSpace);
+	}
+
+	public List<Event> step() {
 		List<Event> newEvents = new ArrayList<Event>();
 		List< ArrayList<Actor> > parentActorSets = new ArrayList< ArrayList<Actor> >();
+		
+		//Determine cost
+		int stepCost = resourceManager.stepCost();
 
 		//Extract cost to execute this step
 		ExtractCost(stepCost);
@@ -67,9 +72,6 @@ public class Environment {
 		//Actor death check
 		RemoveDeadActors();
 
-		//Event expiration check
-		RemoveExpiredEvents();
-		
 		//Return if there are no actors
 		if (this.isDead()) {
 			return newEvents;
@@ -110,18 +112,10 @@ public class Environment {
 		}
 	}
 
-	private void RemoveExpiredEvents() {
-		for (int i = 0; i < events.size(); i++) {
-			if (EventStateChecker.isExpired(events.get(i))) {
-				events.remove(i);
-			}
-		}
-	}
-
 	private void Sense() {
 		System.out.println("Actors sensing...");
 		for (int i = 0; i < actors.size(); i++) {
-			Sensor.detectAllAndRecord(events, actors.get(i));
+			Sensor.detectAllAndRecord(eventSpace.getEvents(), actors.get(i));
 			actors.get(i);
 		}
 	}
@@ -189,12 +183,22 @@ public class Environment {
 		parentActorSets.clear();
 	}
 
+	public ResourceManager getResourceManager() {
+		return resourceManager;
+	}
+
+	public void setResourceManager(ResourceManager resourceManager) {
+		this.resourceManager = resourceManager;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((actors == null) ? 0 : actors.hashCode());
-		result = prime * result + ((events == null) ? 0 : events.hashCode());
+		result = prime * result + maxSize;
+		result = prime * result
+				+ ((resourceManager == null) ? 0 : resourceManager.hashCode());
 		return result;
 	}
 
@@ -212,11 +216,14 @@ public class Environment {
 				return false;
 		} else if (!actors.equals(other.actors))
 			return false;
-		if (events == null) {
-			if (other.events != null)
+		if (maxSize != other.maxSize)
+			return false;
+		if (resourceManager == null) {
+			if (other.resourceManager != null)
 				return false;
-		} else if (!events.equals(other.events))
+		} else if (!resourceManager.equals(other.resourceManager))
 			return false;
 		return true;
 	}
+
 }

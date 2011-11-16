@@ -8,6 +8,8 @@ import org.junit.Test;
 
 import com.uobia.gpes.actor.Actor;
 import com.uobia.gpes.event.Event;
+import com.uobia.gpes.eventspace.EventSpace;
+import com.uobia.gpes.eventspace.EventSpaceTest;
 import com.uobia.gpes.model.Info;
 
 public class EnvironmentTest {
@@ -20,26 +22,17 @@ public class EnvironmentTest {
 		Assert.assertTrue("Actors should be correctly added", addSuccessful);
 	}
 	
-    @Test
-    public void shouldAddEvents() {
-        Environment environment = Environment.create();
-		environment.clear();
-        environment.addEvents(generateTestEvents());
-        boolean addSuccessful = environment.getEvents().equals(generateTestEvents());
-        Assert.assertTrue("Events should be correctly added", addSuccessful);
-    }
-    
 	@Test
 	public void shouldClear() {
 		Environment environment = Environment.create();
 		environment.addActors(generateTestActors());
-		environment.addEvents(generateTestEvents());
 		environment.clear();
-		Assert.assertTrue("Environment should be cleared", environment.getActors().isEmpty() && environment.getEvents().isEmpty());
+		Assert.assertTrue("Environment should be cleared", environment.getActors().isEmpty());
 	}
 	
 	@Test
 	public void shouldBeEqual() {
+		//Currently fails because resource manager equality is not yet complete
 		Environment e1 = Environment.create();
 		Environment e2 = Environment.create();
 		Actor actor = Actor.create();
@@ -48,12 +41,6 @@ public class EnvironmentTest {
 		actors.add(actor);
 		e1.addActors(actors);
 		e2.addActors(actors);
-		Event event = Event.create();
-		event.infoStore().add(Info.create(4, 5, 6));
-		List<Event> events = new ArrayList<Event>();
-		events.add(event);
-		e1.addEvents(events);
-		e2.addEvents(events);
 		Assert.assertTrue("Environments with the same actors and events should be equal", e1.equals(e2));
 	}
 	
@@ -74,8 +61,8 @@ public class EnvironmentTest {
 		event.infoStore().add(Info.create(4, 5, 6));
 		List<Event> events = new ArrayList<Event>();
 		events.add(event);
-		e1.addEvents(events);
-		e2.addEvents(events);
+		e1.getEventSpace().addEvents(events);
+		e2.getEventSpace().addEvents(events);
 		Assert.assertFalse("Environments with different actors or events should not be equal", e1.equals(e2));
 	}
 	@Test
@@ -84,7 +71,7 @@ public class EnvironmentTest {
 		environment.clear();
 		Assert.assertTrue("Empty environment should be dead", environment.isDead());
 		
-		environment.addEvents(generateTestEvents());
+		environment.getEventSpace().addEvents(generateTestEvents());
 		Assert.assertTrue("Environment with events but no actors should be dead", environment.isDead());
 	}
 	
@@ -93,6 +80,15 @@ public class EnvironmentTest {
 		Environment environment = Environment.create();
 		environment.addActors(generateTestActors());
 		Assert.assertFalse("Environment with actors should not be dead", environment.isDead());
+	}
+	
+	@Test
+	public void shouldSetEventSpace() {
+		Environment environment = Environment.create();
+		EventSpace eventSpace = EventSpace.create();
+		eventSpace.addEvents(EventSpaceTest.generateTestEvents());
+		environment.setEventSpace(eventSpace);
+		Assert.assertEquals("Event space should be connected", eventSpace, environment.getEventSpace());
 	}
 	
 	@Test
