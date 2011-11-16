@@ -14,12 +14,14 @@ public class Animator {
 	private EventSpace eventSpace;
 	private Bridge bridge;
 	private boolean stop;
-	private long maxStepCount = 1000;
-	private int minInterval = 0;
+	private long maxStepCount;
+	private int minInterval;
 	
 	private Animator() {
 		step = 0;
 		stop = false;
+		maxStepCount = 1000;
+		minInterval = 0;
 	}
 
 	public static final Animator create(List<Environment> environments, EventSpace eventSpace, Bridge bridge) {
@@ -64,6 +66,14 @@ public class Animator {
 
 	public void setMinInterval(int minInterval) {
 		this.minInterval = minInterval;
+	}
+
+	public long getMaxStepCount() {
+		return maxStepCount;
+	}
+
+	public void setMaxStepCount(long maxStepCount) {
+		this.maxStepCount = maxStepCount;
 	}
 
 	public void animate() {
