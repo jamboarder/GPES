@@ -7,6 +7,7 @@ import java.util.List;
 import com.uobia.gpes.model.Constraint;
 import com.uobia.gpes.model.Info;
 import com.uobia.gpes.model.InfoComparator;
+import com.uobia.gpes.model.InfoCompareTarget;
 import com.uobia.gpes.model.InfoStore;
 import com.uobia.gpes.model.MatchRule;
 
@@ -19,8 +20,6 @@ public class Matcher {
 	 * m1, MATCH_S, c1
 	 * c1, COMPARE_USING, COMPARE_GREATER_THAN
 	 * c1, COMPARE_WITH_FIXED, 4
-	 * s1, HAS_PART, a1
-	 * a1, IS_TYPE, TYPE_ACTION_RULE
 	 * ...
 	 */
 
@@ -89,15 +88,15 @@ public class Matcher {
 		}
 	}
 	
-	private static List<Integer> indexesForSubject(final Info info, final InfoStore infoStore) {
+	public static List<Integer> indexesForSubject(final Info info, final InfoStore infoStore) {
 		return indexesForElement(info.getSubject(), infoStore.getSubjectCache());
 	}
 	
-	private static List<Integer> indexesForPredicate(final Info info, final InfoStore infoStore) {
+	public static List<Integer> indexesForPredicate(final Info info, final InfoStore infoStore) {
 		return indexesForElement(info.getPredicate(), infoStore.getPredicateCache());
 	}
 
-	private static List<Integer> indexesForObject(final Info info, final InfoStore infoStore) {
+	public static List<Integer> indexesForObject(final Info info, final InfoStore infoStore) {
 		return indexesForElement(info.getObject(), infoStore.getObjectCache());
 	}
 	
@@ -116,7 +115,7 @@ public class Matcher {
 		return elementsForIndexes(indexes, infoStore.getObjectCache());
 	}
 
-	private static List<Integer> indexesForElement(int element, List<Integer> elementCache) {
+	public static List<Integer> indexesForElement(int element, List<Integer> elementCache) {
 		List<Integer> indexes = new ArrayList<Integer>();
 		int index = elementCache.indexOf(element);
 	    int lastIndex = elementCache.lastIndexOf(element);
@@ -170,26 +169,57 @@ public class Matcher {
 		return indexes;
 	}
 
+	private static List<Integer> indexesForElementsNotEqual(int value, List<Integer> elementCache) {
+		List<Integer> indexes = new ArrayList<Integer>();
+		
+		for (int i = 0; i < elementCache.size(); i++) {
+			int element = elementCache.get(i);
+			if (element != value) {
+				indexes.add(i);
+			}
+		}
+		return indexes;
+	}
+	
 	private static void getSubjectMatches(final MatchRule matchRule, final InfoStore infoStore, 
 			List<Info> matches) {
 		List<Constraint> subjectConstraints = matchRule.getSubjectConstraints();
 		for (Constraint constraint: subjectConstraints) {
+			if (!constraint.isValid()) {
+				continue;
+			}
 			if (constraint.isFixed()) {
 				int value = constraint.getFixedValue();
 				InfoComparator comparator = constraint.getComparator();
-				List<Integer> subjectIndexes = new ArrayList<Integer>();
-				if (comparator.equals(InfoComparator.COMPARATOR_EQUALS)) {
-					subjectIndexes = Matcher.indexesForElement(value, infoStore.getSubjectCache());
-				} else if (comparator.equals(InfoComparator.COMPARATOR_GREATER_THAN)) {
-					subjectIndexes = Matcher.indexesForElementsGreaterThan(value, infoStore.getSubjectCache());
-				} else if (comparator.equals(InfoComparator.COMPARATOR_LESS_THAN)) {
-					subjectIndexes = Matcher.indexesForElementsLessThan(value, infoStore.getSubjectCache());
-				}
-				List<Info> subjectMatches = infoForIndexes(subjectIndexes, infoStore);
+				List<Info> subjectMatches = Matcher.subjectMatches(comparator, value, infoStore);
 				subjectMatches.removeAll(matches);
 				matches.addAll(subjectMatches);
 			} else {
-				//TODO: Variable matches
+				int targetMatchRuleId = constraint.getTargetMatchRule();
+				if (targetMatchRuleId == matchRule.getId()) {
+					//Ignore circular matches
+					continue;
+				}
+				InfoCompareTarget target = constraint.getCompareTarget();
+				MatchRule targetMatchRule = infoStore.getMatchRule(targetMatchRuleId);
+				List<Info> subRuleMatches = Matcher.match(targetMatchRule, infoStore);
+				for (Info subMatch: subRuleMatches) {
+					if (target.equals(InfoCompareTarget.NULL)) {
+						continue;
+					}
+					int value;
+					if (target.equals(InfoCompareTarget.COMPARE_WITH_S_FROM)) {
+						value = subMatch.getSubject();
+					} else if (target.equals(InfoCompareTarget.COMPARE_WITH_P_FROM)) {
+						value = subMatch.getPredicate();
+					} else {
+						value = subMatch.getObject();
+					}
+					InfoComparator comparator = constraint.getComparator();
+					List<Info> subjectMatches = Matcher.subjectMatches(comparator, value, infoStore);
+					subjectMatches.removeAll(matches);
+					matches.addAll(subjectMatches);
+				}
 			}
 		}
 	}
@@ -198,22 +228,41 @@ public class Matcher {
 			List<Info> matches) {
 		List<Constraint> predicateConstraints = matchRule.getPredicateConstraints();
 		for (Constraint constraint: predicateConstraints) {
+			if (!constraint.isValid()) {
+				continue;
+			}
 			if (constraint.isFixed()) {
 				int value = constraint.getFixedValue();
 				InfoComparator comparator = constraint.getComparator();
-				List<Integer> predicateIndexes = new ArrayList<Integer>();
-				if (comparator.equals(InfoComparator.COMPARATOR_EQUALS)) {
-					predicateIndexes = Matcher.indexesForElement(value, infoStore.getPredicateCache());
-				} else if (comparator.equals(InfoComparator.COMPARATOR_GREATER_THAN)) {
-					predicateIndexes = Matcher.indexesForElementsGreaterThan(value, infoStore.getPredicateCache());
-				} else if (comparator.equals(InfoComparator.COMPARATOR_LESS_THAN)) {
-					predicateIndexes = Matcher.indexesForElementsLessThan(value, infoStore.getPredicateCache());
-				}
-				List<Info> predicateMatches = infoForIndexes(predicateIndexes, infoStore);
+				List<Info> predicateMatches = Matcher.predicateMatches(comparator, value, infoStore);
 				predicateMatches.removeAll(matches);
 				matches.addAll(predicateMatches);
 			} else {
-				//TODO: Variable matches
+				int targetMatchRuleId = constraint.getTargetMatchRule();
+				if (targetMatchRuleId == matchRule.getId()) {
+					//Ignore circular matches
+					continue;
+				}
+				InfoCompareTarget target = constraint.getCompareTarget();
+				MatchRule targetMatchRule = infoStore.getMatchRule(targetMatchRuleId);
+				List<Info> subRuleMatches = Matcher.match(targetMatchRule, infoStore);
+				for (Info subMatch: subRuleMatches) {
+					if (target.equals(InfoCompareTarget.NULL)) {
+						continue;
+					}
+					int value;
+					if (target.equals(InfoCompareTarget.COMPARE_WITH_S_FROM)) {
+						value = subMatch.getSubject();
+					} else if (target.equals(InfoCompareTarget.COMPARE_WITH_P_FROM)) {
+						value = subMatch.getPredicate();
+					} else {
+						value = subMatch.getObject();
+					}
+					InfoComparator comparator = constraint.getComparator();
+					List<Info> predicateMatches = Matcher.predicateMatches(comparator, value, infoStore);
+					predicateMatches.removeAll(matches);
+					matches.addAll(predicateMatches);
+				}
 			}
 		}
 	}
@@ -222,23 +271,84 @@ public class Matcher {
 			List<Info> matches) {
 		List<Constraint> objectConstraints = matchRule.getObjectConstraints();
 		for (Constraint constraint: objectConstraints) {
+			if (!constraint.isValid()) {
+				continue;
+			}
 			if (constraint.isFixed()) {
 				int value = constraint.getFixedValue();
 				InfoComparator comparator = constraint.getComparator();
-				List<Integer> objectIndexes = new ArrayList<Integer>();
-				if (comparator.equals(InfoComparator.COMPARATOR_EQUALS)) {
-					objectIndexes = Matcher.indexesForElement(value, infoStore.getObjectCache());
-				} else if (comparator.equals(InfoComparator.COMPARATOR_GREATER_THAN)) {
-					objectIndexes = Matcher.indexesForElementsGreaterThan(value, infoStore.getObjectCache());
-				} else if (comparator.equals(InfoComparator.COMPARATOR_LESS_THAN)) {
-					objectIndexes = Matcher.indexesForElementsLessThan(value, infoStore.getObjectCache());
-				}
-				List<Info> objectMatches = infoForIndexes(objectIndexes, infoStore);
+				List<Info> objectMatches = Matcher.objectMatches(comparator, value, infoStore);
 				objectMatches.removeAll(matches);
 				matches.addAll(objectMatches);
 			} else {
-				//TODO: Variable matches
+				int targetMatchRuleId = constraint.getTargetMatchRule();
+				if (targetMatchRuleId == matchRule.getId()) {
+					//Ignore circular matches
+					continue;
+				}
+				InfoCompareTarget target = constraint.getCompareTarget();
+				MatchRule targetMatchRule = infoStore.getMatchRule(targetMatchRuleId);
+				List<Info> subRuleMatches = Matcher.match(targetMatchRule, infoStore);
+				for (Info subMatch: subRuleMatches) {
+					if (target.equals(InfoCompareTarget.NULL)) {
+						continue;
+					}
+					int value;
+					if (target.equals(InfoCompareTarget.COMPARE_WITH_S_FROM)) {
+						value = subMatch.getSubject();
+					} else if (target.equals(InfoCompareTarget.COMPARE_WITH_P_FROM)) {
+						value = subMatch.getPredicate();
+					} else {
+						value = subMatch.getObject();
+					}
+					InfoComparator comparator = constraint.getComparator();
+					List<Info> objectMatches = Matcher.objectMatches(comparator, value, infoStore);
+					objectMatches.removeAll(matches);
+					matches.addAll(objectMatches);
+				}
 			}
 		}
+	}
+	
+	private static List<Info> subjectMatches(InfoComparator comparator, int value, InfoStore infoStore) {
+		List<Integer> subjectIndexes = new ArrayList<Integer>();
+		if (comparator.equals(InfoComparator.COMPARATOR_EQUALS)) {
+			subjectIndexes = Matcher.indexesForElement(value, infoStore.getSubjectCache());
+		} else if (comparator.equals(InfoComparator.COMPARATOR_GREATER_THAN)) {
+			subjectIndexes = Matcher.indexesForElementsGreaterThan(value, infoStore.getSubjectCache());
+		} else if (comparator.equals(InfoComparator.COMPARATOR_LESS_THAN)) {
+			subjectIndexes = Matcher.indexesForElementsLessThan(value, infoStore.getSubjectCache());
+		} else if (comparator.equals(InfoComparator.COMPARATOR_NOT_EQUALS)) {
+			subjectIndexes = Matcher.indexesForElementsNotEqual(value, infoStore.getSubjectCache());
+		}
+		return infoForIndexes(subjectIndexes, infoStore);
+	}
+
+	private static List<Info> predicateMatches(InfoComparator comparator, int value, InfoStore infoStore) {
+		List<Integer> predicateIndexes = new ArrayList<Integer>();
+		if (comparator.equals(InfoComparator.COMPARATOR_EQUALS)) {
+			predicateIndexes = Matcher.indexesForElement(value, infoStore.getPredicateCache());
+		} else if (comparator.equals(InfoComparator.COMPARATOR_GREATER_THAN)) {
+			predicateIndexes = Matcher.indexesForElementsGreaterThan(value, infoStore.getPredicateCache());
+		} else if (comparator.equals(InfoComparator.COMPARATOR_LESS_THAN)) {
+			predicateIndexes = Matcher.indexesForElementsLessThan(value, infoStore.getPredicateCache());
+		} else if (comparator.equals(InfoComparator.COMPARATOR_NOT_EQUALS)) {
+			predicateIndexes = Matcher.indexesForElementsNotEqual(value, infoStore.getPredicateCache());
+		}
+		return infoForIndexes(predicateIndexes, infoStore);
+	}
+	
+	private static List<Info> objectMatches(InfoComparator comparator, int value, InfoStore infoStore) {
+		List<Integer> objectIndexes = new ArrayList<Integer>();
+		if (comparator.equals(InfoComparator.COMPARATOR_EQUALS)) {
+			objectIndexes = Matcher.indexesForElement(value, infoStore.getObjectCache());
+		} else if (comparator.equals(InfoComparator.COMPARATOR_GREATER_THAN)) {
+			objectIndexes = Matcher.indexesForElementsGreaterThan(value, infoStore.getObjectCache());
+		} else if (comparator.equals(InfoComparator.COMPARATOR_LESS_THAN)) {
+			objectIndexes = Matcher.indexesForElementsLessThan(value, infoStore.getObjectCache());
+		} else if (comparator.equals(InfoComparator.COMPARATOR_NOT_EQUALS)) {
+			objectIndexes = Matcher.indexesForElementsNotEqual(value, infoStore.getObjectCache());
+		}
+		return infoForIndexes(objectIndexes, infoStore);
 	}
 }

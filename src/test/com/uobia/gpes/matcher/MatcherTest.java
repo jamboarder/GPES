@@ -11,6 +11,7 @@ import org.junit.Test;
 import com.uobia.gpes.model.Constraint;
 import com.uobia.gpes.model.Info;
 import com.uobia.gpes.model.InfoComparator;
+import com.uobia.gpes.model.InfoCompareTarget;
 import com.uobia.gpes.model.InfoFixture;
 import com.uobia.gpes.model.InfoMatchTarget;
 import com.uobia.gpes.model.InfoStore;
@@ -29,7 +30,17 @@ public class MatcherTest {
 	 * c1, COMPARE_WITH_FIXED, 4
 	 * s1, HAS_PART, a1
 	 * a1, IS_TYPE, TYPE_ACTION_RULE
+	 * a1, DELETE, d1
+	 * d1, DELETE_TYPE, DELETE_ALL
+	 * s1, HAS_PART, a2
+	 * a2, MODIFY, mr1
+	 * mr1, MODIFY_S, mod1
+	 * mod1, METHOD, MODIFY_ADD
+	 * mod1, WITH_FIXED, 4
 	 * ...
+	 * s1, HAS_PART, a3
+	 * a3, CREATE_FROM, m1
+	 * a3, CREATE_USING, cr1
 	 */
 	
 	@Test
@@ -178,6 +189,41 @@ public class MatcherTest {
 		correctMatches.add(infoStore.get(0));
 		correctMatches.add(infoStore.get(1));
 		Assert.assertTrue("Should match some info", Matcher.match(m, infoStore).equals(correctMatches));
+	}
+
+	@Test
+	public void shouldFindMatchingInfo10() {
+		InfoStore infoStore = InfoStore.create();
+		List<Info> infos = InfoFixture.createInfo();
+		infoStore.addAll(infos);
+		MatchRule m = MatchRule.create(0);
+		Constraint c= Constraint.create(m.getId() + 1);
+		c.addComparator(InfoComparator.COMPARATOR_NOT_EQUALS, 1);
+		m.addConstraint(InfoMatchTarget.MATCH_S, c);
+		List<Info> correctMatches = new ArrayList<Info>();
+		correctMatches.add(infoStore.get(3));
+		correctMatches.add(infoStore.get(4));
+		Assert.assertTrue("Should match some info", Matcher.match(m, infoStore).equals(correctMatches));
+	}
+
+	@Test
+	public void shouldFindMatchingInfo11() {
+		InfoStore infoStore = InfoStore.create();
+		List<Info> infos = InfoFixture.createInfo();
+		infoStore.addAll(infos);
+		MatchRule m0 = MatchRule.create(10);		
+		Constraint c0= Constraint.create(m0.getId() + 1);
+		c0.addComparator(InfoComparator.COMPARATOR_EQUALS, 1);
+		m0.addConstraint(InfoMatchTarget.MATCH_S, c0);
+		infoStore.addAll(m0.getInfo());
+		MatchRule m1 = MatchRule.create(c0.getId()+1);
+		Constraint c1= Constraint.create(m1.getId() + 1);
+		c1.addComparator(InfoComparator.COMPARATOR_EQUALS, InfoCompareTarget.COMPARE_WITH_O_FROM, m0.getId());
+		m1.addConstraint(InfoMatchTarget.MATCH_S, c1);
+		List<Info> correctMatches = new ArrayList<Info>();
+		correctMatches.add(infoStore.get(3));
+		List<Info> matches = Matcher.match(m1, infoStore);
+		Assert.assertTrue("Should match some info", matches.equals(correctMatches));
 	}
 
 	@Test

@@ -15,8 +15,9 @@ public class Constraint implements Serializable {
 	 * m1, MATCH_S, c1
 	 * c1, COMPARE_USING, COMPARE_GREATER_THAN
 	 * c1, COMPARE_WITH_FIXED, 4
-	 * s1, HAS_PART, a1
-	 * a1, IS_TYPE, TYPE_ACTION_RULE
+	 * m1, MATCH_O, c2
+	 * c2, COMPARE_USING, COMPARE_EQUALS
+	 * c2, COMPARE_WITH_S_FROM, m2
 	 * ...
 	 */
 	
@@ -53,13 +54,31 @@ public class Constraint implements Serializable {
 		return Collections.unmodifiableList(infoCollection);
 	}
 	
+	public boolean isValid() {
+		boolean comparatorExists = false;
+		boolean compareWithExists = false;
+		for (Info info: infoCollection) {
+			if (info.getPredicate() == InfoPredicate.COMPARE_USING.getValue() &&
+				InfoComparator.has(info.getObject()) &&
+				info.getObject() != InfoComparator.NULL.getValue()) {
+				comparatorExists = true;
+			}
+			if (info.getPredicate() == InfoPredicate.COMPARE_WITH_FIXED.getValue() ||
+				InfoCompareTarget.has(info.getPredicate()) &&
+				info.getPredicate() != InfoCompareTarget.NULL.getValue()) {
+				compareWithExists = true;
+			}
+		}
+		return (comparatorExists && compareWithExists);
+	}
+	
 	public InfoComparator getComparator() {
 		for (Info info: infoCollection) {
 			if (info.getPredicate() == InfoPredicate.COMPARE_USING.getValue()) {
 				return InfoComparator.get(info.getObject());
 			}
 		}
-		return InfoComparator.COMPARATOR_EQUALS;
+		return InfoComparator.NULL;
 	}
 
 	public boolean isFixed() {
@@ -74,6 +93,28 @@ public class Constraint implements Serializable {
 	public int getFixedValue() {
 		for (Info info: infoCollection) {
 			if (info.getPredicate() == InfoPredicate.COMPARE_WITH_FIXED.getValue()) {
+				return info.getObject();
+			}
+		}
+		return 0;
+	}
+
+	public InfoCompareTarget getCompareTarget() {
+		for (Info info: infoCollection) {
+			if (info.getPredicate() == InfoPredicate.COMPARE_WITH_S_FROM.getValue() ||
+				info.getPredicate() == InfoPredicate.COMPARE_WITH_P_FROM.getValue() ||
+				info.getPredicate() == InfoPredicate.COMPARE_WITH_O_FROM.getValue()) {
+				return InfoCompareTarget.get(info.getPredicate());
+			}
+		}
+		return InfoCompareTarget.NULL;
+	}
+
+	public int getTargetMatchRule() {
+		for (Info info: infoCollection) {
+			if (info.getPredicate() == InfoPredicate.COMPARE_WITH_S_FROM.getValue() ||
+				info.getPredicate() == InfoPredicate.COMPARE_WITH_P_FROM.getValue() ||
+				info.getPredicate() == InfoPredicate.COMPARE_WITH_O_FROM.getValue()) {
 				return info.getObject();
 			}
 		}

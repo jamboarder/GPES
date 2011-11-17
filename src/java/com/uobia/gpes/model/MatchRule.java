@@ -31,7 +31,7 @@ public class MatchRule implements Serializable {
 		infoCollection = new ArrayList<Info>();
 		infoCollection.add(Info.create(this.id, 
 				                       InfoPredicate.IS_TYPE.getValue(), 
-				                       InfoObject.TYPE_CONSTRAINT.getValue()));
+				                       InfoObject.TYPE_MATCH_RULE.getValue()));
 		constraints = new ArrayList<Constraint>();
 	}
 	

@@ -38,6 +38,10 @@ public class Info implements Serializable {
         }
     }
     
+    public String asString() {
+    	return new String(this.getSubject() + "," + this.getPredicate() + "," + this.getObject() + "\n");
+    }
+    
     @Override
 	public int hashCode() {
 		final int prime = 31;

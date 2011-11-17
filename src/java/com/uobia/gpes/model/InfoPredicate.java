@@ -1,6 +1,7 @@
 package com.uobia.gpes.model;
 
 public enum InfoPredicate {
+    NULL(-1),
     HAS_ID(0),
     IS_TYPE(1),
     CREATED_BY(2),

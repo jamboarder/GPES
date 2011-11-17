@@ -119,6 +119,43 @@ public class InfoStore implements Serializable {
 		return objectCache;
 	}
 	
+	public MatchRule getMatchRule(int matchRuleId) {
+		MatchRule matchRule = MatchRule.create(matchRuleId);
+		List<Integer> mInfoIndexes = Matcher.indexesForElement(matchRuleId, subjectCache);
+		List<Info> mInfos = Matcher.infoForIndexes(mInfoIndexes, this);
+		for (Info mInfo: mInfos) {
+			if (InfoMatchTarget.has(mInfo.getPredicate())) {
+				int constraintId = mInfo.getObject();
+				List<Integer> cInfoIndexes = Matcher.indexesForElement(constraintId, subjectCache);
+				List<Info> cInfos = Matcher.infoForIndexes(cInfoIndexes, this);
+				InfoComparator comparator = InfoComparator.NULL;
+				Info targetInfo = Info.create(constraintId, InfoPredicate.COMPARE_WITH_FIXED.getValue(), 0);
+				for (Info cInfo: cInfos) {
+					if (InfoComparator.has(cInfo.getObject())) {
+						comparator = InfoComparator.get(cInfo.getObject());
+					}
+					if (cInfo.getPredicate() == InfoPredicate.COMPARE_WITH_FIXED.getValue() ||
+						InfoCompareTarget.has(cInfo.getPredicate())) {
+						targetInfo = cInfo;
+					}
+				}
+				if (comparator == InfoComparator.NULL) {
+					continue;
+				}
+				if (targetInfo.getPredicate() == InfoPredicate.COMPARE_WITH_FIXED.getValue()) {
+					Constraint constraint = Constraint.create(constraintId);
+					constraint.addComparator(comparator, targetInfo.getObject());
+					matchRule.addConstraint(InfoMatchTarget.get(mInfo.getPredicate()), constraint);
+				} else {
+					Constraint constraint = Constraint.create(constraintId);
+					constraint.addComparator(comparator, InfoCompareTarget.get(targetInfo.getPredicate()), targetInfo.getObject());
+					matchRule.addConstraint(InfoMatchTarget.get(mInfo.getPredicate()), constraint);
+				}
+			}
+		}
+		return matchRule;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
